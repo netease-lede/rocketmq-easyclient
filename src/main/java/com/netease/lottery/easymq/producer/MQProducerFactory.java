@@ -41,7 +41,7 @@ public class MQProducerFactory
 	{
 		if (mqConfigFileName == null || mqConfigFileName.length() <= 0)
 		{
-			mqConfigFileName = MQConstant.DEFAULT_FILENAME;
+			throw new Exception("");
 		}
 		MQProducer mqProducer = PRODUCER_MAP.get(mqConfigFileName);
 		if (mqProducer != null)
