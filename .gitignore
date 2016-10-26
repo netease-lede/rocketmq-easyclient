@@ -13,8 +13,10 @@ bin
 *.class
 !.gitignore
 *.classpath
+.classpath
 *.settings
 *.project
 .myeclipse
 *.tar.gz
 */target/
+/target/
