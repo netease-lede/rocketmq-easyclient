@@ -20,3 +20,5 @@ bin
 *.tar.gz
 */target/
 /target/
+/.classpath
+/target
