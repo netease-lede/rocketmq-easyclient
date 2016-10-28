@@ -1,14 +1,13 @@
 package com.netease.lottery.easymq.consumer;
 
 import java.io.FileInputStream;
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
-import com.alibaba.rocketmq.client.exception.MQClientException;
+import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import com.netease.lottery.easymq.constant.MQConstant;
 
 public class MQPushConsumer
@@ -43,26 +42,18 @@ public class MQPushConsumer
 		}
 	}
 
-	public void subsribeTopic(String topic) throws MQClientException
+	public void start(String[] topics, MessageListenerConcurrently messageListenerConcurrently)
+			throws Exception
 	{
-		subsribeTopic(topic, "*");
-	}
-
-	public void subsribeTopic(String topic, String tags) throws MQClientException
-	{
-		consumer.subscribe(topic, tags);
-	}
-
-	public void subsribeTopics(List<String> topics) throws MQClientException
-	{
+		if (topics == null || topics.length <= 0 || messageListenerConcurrently == null)
+		{
+			throw new Exception("");
+		}
 		for (String topic : topics)
 		{
 			consumer.subscribe(topic, "*");
 		}
-	}
-
-	public void start() throws MQClientException
-	{
+		consumer.registerMessageListener(messageListenerConcurrently);
 		consumer.start();
 	}
 

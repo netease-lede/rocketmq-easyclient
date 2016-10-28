@@ -19,6 +19,10 @@ public class MQConsumerGroup
 {
 	private Log LOG = LogFactory.getLog(MQConsumerGroup.class);
 	/**
+	 * 消费组名称
+	 */
+	private String consumerGroupName;
+	/**
 	 * 消费者数量
 	 */
 	private Integer consumerNumber;
@@ -30,6 +34,16 @@ public class MQConsumerGroup
 	 * 消息监听器
 	 */
 	private MessageListenerConcurrently messageListenerConcurrently;
+	/**
+	 * 消费组配置文件名
+	 */
+	private String consumerConfigFileName;
+	/**
+	 * 消费组订阅的Topic列表
+	 */
+	private String[] topics;
+
+	private List<MQPushConsumer> consumerList = Lists.newArrayList();
 
 	public void initConsumerGroup() throws Exception
 	{
@@ -39,11 +53,12 @@ public class MQConsumerGroup
 		}
 		for (int index = 1; index <= consumerNumber; index++)
 		{
-			
-			
+			MQPushConsumer consumer = MQConsumerFactory.getFactory().getMQConsumer(consumerConfigFileName);
+			consumer.start(topics, messageListenerConcurrently);
+			consumerList.add(consumer);
 		}
 	}
-	
+
 	public void registerTopicHandler(String topic, MQRecMsgHandler handler)
 	{
 		LOG.info("easymq registerTopicHandler for topic:" + topic + ",handler:" + handler.getClass());
@@ -60,6 +75,16 @@ public class MQConsumerGroup
 		}
 	}
 
+	public String getConsumerGroupName()
+	{
+		return consumerGroupName;
+	}
+
+	public void setConsumerGroupName(String consumerGroupName)
+	{
+		this.consumerGroupName = consumerGroupName;
+	}
+
 	public Integer getConsumerNumber()
 	{
 		return consumerNumber;
@@ -68,6 +93,16 @@ public class MQConsumerGroup
 	public void setConsumerNumber(Integer consumerNumber)
 	{
 		this.consumerNumber = consumerNumber;
+	}
+
+	public String getConsumerConfigFileName()
+	{
+		return consumerConfigFileName;
+	}
+
+	public void setConsumerConfigFileName(String consumerConfigFileName)
+	{
+		this.consumerConfigFileName = consumerConfigFileName;
 	}
 
 	public Map<String, List<MQRecMsgHandler>> getHandlerMap()
@@ -121,5 +156,15 @@ public class MQConsumerGroup
 				return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
 			}
 		};
+	}
+
+	public String[] getTopics()
+	{
+		return topics;
+	}
+
+	public void setTopics(String[] topics)
+	{
+		this.topics = topics;
 	}
 }
