@@ -42,7 +42,9 @@ public class MQConsumerGroup
 	 * 消费组订阅的Topic列表
 	 */
 	private String[] topics;
-
+	/**
+	 * 消费者列表
+	 */
 	private List<MQPushConsumer> consumerList = Lists.newArrayList();
 
 	public void initConsumerGroup() throws Exception
