@@ -53,18 +53,33 @@ public class MQProducer
 	}
 
 	/**
-	 * 单向发送，不等待应答
+	 * 单向发送，不等待应答,消息使用utf8编码
 	 * @param topic
 	 * @param tags
 	 * @param keys
 	 * @param msg
 	 * @throws MqWapperException
 	 */
-	public void sendOneWay(String topic, String tags, String keys, String msg) throws MqWapperException
+	public void sendMsgByOneWay(String topic, String tags, String keys, String msg) throws MqWapperException
+	{
+		this.sendMsgByOneWay(topic, tags, keys, msg, RemotingHelper.DEFAULT_CHARSET);
+	}
+
+	/**
+	 * 单向发送，不等待应答
+	 * @param topic
+	 * @param tags
+	 * @param keys
+	 * @param msg
+	 * @param charset
+	 * @throws MqWapperException
+	 */
+	public void sendMsgByOneWay(String topic, String tags, String keys, String msg, String charset)
+			throws MqWapperException
 	{
 		try
 		{
-			Message message = new Message(topic, tags, keys, msg.getBytes(RemotingHelper.DEFAULT_CHARSET));
+			Message message = new Message(topic, tags, keys, msg.getBytes(charset));
 			producer.sendOneway(message);
 		}
 		catch (Exception e)
@@ -82,7 +97,7 @@ public class MQProducer
 	}
 
 	/**
-	 * 顺序消息，同类orderTag标记的消息接收有序
+	 * 顺序消息，同类orderTag标记的消息接收有序,消息使用utf8编码
 	 * @param topic
 	 * @param tags
 	 * @param keys
@@ -91,12 +106,29 @@ public class MQProducer
 	 * @throws MqBussinessException
 	 * @throws MqWapperException
 	 */
-	public void sendByOrder(String topic, String tags, String keys, String msg, String orderTag)
+	public void sendMsgByOrder(String topic, String tags, String keys, String msg, String orderTag)
+			throws MqBussinessException, MqWapperException
+	{
+		this.sendMsgByOrder(topic, tags, keys, msg, orderTag, RemotingHelper.DEFAULT_CHARSET);
+	}
+
+	/**
+	 * 顺序消息，同类orderTag标记的消息接收有序
+	 * @param topic
+	 * @param tags
+	 * @param keys
+	 * @param msg
+	 * @param orderTag
+	 * @param charset
+	 * @throws MqBussinessException
+	 * @throws MqWapperException
+	 */
+	public void sendMsgByOrder(String topic, String tags, String keys, String msg, String orderTag, String charset)
 			throws MqBussinessException, MqWapperException
 	{
 		try
 		{
-			Message message = new Message(topic, tags, keys, msg.getBytes(RemotingHelper.DEFAULT_CHARSET));
+			Message message = new Message(topic, tags, keys, msg.getBytes(charset));
 			SendResult sendResult = producer.send(message, new MessageQueueSelector() {
 				public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg)
 				{
@@ -126,7 +158,7 @@ public class MQProducer
 	}
 
 	/**
-	 * 同步返回
+	 * 同步返回,消息使用utf8编码
 	 * @param topic
 	 * @param tags
 	 * @param keys
@@ -137,9 +169,22 @@ public class MQProducer
 	public void sendMsg(String topic, String tags, String keys, String msg)
 			throws MqBussinessException, MqWapperException
 	{
+		this.sendMsg(topic, tags, keys, msg, RemotingHelper.DEFAULT_CHARSET);
+	}
+
+	/**
+	 * 同步返回
+	 * @param topic
+	 * @param tags
+	 * @param keys
+	 * @param msg
+	 * @param charset
+	 */
+	public void sendMsg(String topic, String tags, String keys, String msg, String charset)
+	{
 		try
 		{
-			Message message = new Message(topic, tags, keys, msg.getBytes(RemotingHelper.DEFAULT_CHARSET));
+			Message message = new Message(topic, tags, keys, msg.getBytes(charset));
 			SendResult sendResult = producer.send(message);
 			SendStatus sendStatus = sendResult.getSendStatus();
 			if (!Objects.equals(sendStatus, SendStatus.SEND_OK))
