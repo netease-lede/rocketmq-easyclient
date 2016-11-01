@@ -1,20 +1,27 @@
 package com.netease.lottery.easymq.producer;
 
 import java.io.FileInputStream;
+import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.alibaba.rocketmq.client.producer.DefaultMQProducer;
+import com.alibaba.rocketmq.client.producer.MessageQueueSelector;
 import com.alibaba.rocketmq.client.producer.SendResult;
+import com.alibaba.rocketmq.client.producer.SendStatus;
 import com.alibaba.rocketmq.common.message.Message;
+import com.alibaba.rocketmq.common.message.MessageQueue;
 import com.alibaba.rocketmq.remoting.common.RemotingHelper;
 import com.netease.lottery.easymq.constant.MQConstant;
+import com.netease.lottery.easymq.exception.MqBussinessException;
+import com.netease.lottery.easymq.exception.MqWapperException;
 
 public class MQProducer
 {
-	private final Log LOG = LogFactory.getLog(MQProducer.class);
+	private static final Log LOG = LogFactory.getLog(MQProducer.class);
 
 	private DefaultMQProducer producer;
 
@@ -45,7 +52,15 @@ public class MQProducer
 		}
 	}
 
-	public void sendOneWay(String topic, String tags, String keys, String msg) throws InterruptedException
+	/**
+	 * 单向发送，不等待应答
+	 * @param topic
+	 * @param tags
+	 * @param keys
+	 * @param msg
+	 * @throws MqWapperException
+	 */
+	public void sendOneWay(String topic, String tags, String keys, String msg) throws MqWapperException
 	{
 		try
 		{
@@ -54,37 +69,95 @@ public class MQProducer
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
-			Thread.sleep(1000);
+			try
+			{
+				Thread.sleep(MQConstant.EXCEPTION_SLEEP_TIME);
+			}
+			catch (InterruptedException e1)
+			{
+				e1.printStackTrace();
+			}
+			throw new MqWapperException(e);
 		}
 	}
 
-	public void sendByOrder(String topic, String tags, String keys, String msg)
+	/**
+	 * 顺序消息，同类orderTag标记的消息接收有序
+	 * @param topic
+	 * @param tags
+	 * @param keys
+	 * @param msg
+	 * @param orderTag
+	 * @throws MqBussinessException
+	 * @throws MqWapperException
+	 */
+	public void sendByOrder(String topic, String tags, String keys, String msg, String orderTag)
+			throws MqBussinessException, MqWapperException
+	{
+		try
+		{
+			Message message = new Message(topic, tags, keys, msg.getBytes(RemotingHelper.DEFAULT_CHARSET));
+			SendResult sendResult = producer.send(message, new MessageQueueSelector() {
+				public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg)
+				{
+					Integer id = ((String) arg).hashCode();
+					int index = id % mqs.size();
+					return mqs.get(index);
+				}
+			}, orderTag);
+			SendStatus sendStatus = sendResult.getSendStatus();
+			if (!Objects.equals(sendStatus, SendStatus.SEND_OK))
+			{
+				throw new MqBussinessException(sendStatus.name());
+			}
+		}
+		catch (Exception e)
+		{
+			try
+			{
+				Thread.sleep(MQConstant.EXCEPTION_SLEEP_TIME);
+			}
+			catch (InterruptedException e1)
+			{
+				e1.printStackTrace();
+			}
+			throw new MqWapperException(e);
+		}
+	}
+
+	/**
+	 * 同步返回
+	 * @param topic
+	 * @param tags
+	 * @param keys
+	 * @param msg
+	 * @throws MqBussinessException
+	 * @throws MqWapperException
+	 */
+	public void sendMsg(String topic, String tags, String keys, String msg)
+			throws MqBussinessException, MqWapperException
 	{
 		try
 		{
 			Message message = new Message(topic, tags, keys, msg.getBytes(RemotingHelper.DEFAULT_CHARSET));
 			SendResult sendResult = producer.send(message);
-			System.out.println(sendResult);
+			SendStatus sendStatus = sendResult.getSendStatus();
+			if (!Objects.equals(sendStatus, SendStatus.SEND_OK))
+			{
+				throw new MqBussinessException(sendStatus.name());
+			}
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
-		}
-	}
-
-	public void sendMsg(String topic, String tags, String keys, String msg) throws InterruptedException
-	{
-		try
-		{
-			Message message = new Message(topic, tags, keys, msg.getBytes(RemotingHelper.DEFAULT_CHARSET));
-			SendResult sendResult = producer.send(message);
-			System.out.println(sendResult);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			Thread.sleep(1000);
+			try
+			{
+				Thread.sleep(MQConstant.EXCEPTION_SLEEP_TIME);
+			}
+			catch (InterruptedException e1)
+			{
+				e1.printStackTrace();
+			}
+			throw new MqWapperException(e);
 		}
 	}
 
@@ -101,7 +174,7 @@ public class MQProducer
 			producer.sendMsg("TopicTest", null, null, "RocketMQ test");
 			producer.shutdown();
 		}
-		catch (InterruptedException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
