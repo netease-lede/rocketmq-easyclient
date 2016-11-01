@@ -1,7 +1,6 @@
 package com.netease.lottery.easymq.producer;
 
 import java.io.FileInputStream;
-import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -9,12 +8,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.alibaba.rocketmq.client.producer.DefaultMQProducer;
-import com.alibaba.rocketmq.client.producer.MessageQueueSelector;
+import com.alibaba.rocketmq.client.producer.SendCallback;
 import com.alibaba.rocketmq.client.producer.SendResult;
 import com.alibaba.rocketmq.client.producer.SendStatus;
 import com.alibaba.rocketmq.common.message.Message;
-import com.alibaba.rocketmq.common.message.MessageQueue;
 import com.alibaba.rocketmq.remoting.common.RemotingHelper;
+import com.netease.lottery.easymq.assist.StandardMessageQueueSelector;
 import com.netease.lottery.easymq.constant.MQConstant;
 import com.netease.lottery.easymq.exception.MqBussinessException;
 import com.netease.lottery.easymq.exception.MqWapperException;
@@ -97,6 +96,52 @@ public class MQProducer
 	}
 
 	/**
+	 * 单向顺序发送，不等待应答，使用utf-8编码
+	 * @param topic
+	 * @param tags
+	 * @param keys
+	 * @param msg
+	 * @param orderTag
+	 */
+	public void sendMsgByOneWayOrderly(String topic, String tags, String keys, String msg, String orderTag)
+			throws MqWapperException
+	{
+		this.sendMsgByOneWayOrderly(topic, tags, keys, msg, orderTag, RemotingHelper.DEFAULT_CHARSET);
+	}
+
+	/**
+	 * 单向顺序发送，不等待应答
+	 * @param topic
+	 * @param tags
+	 * @param keys
+	 * @param msg
+	 * @param orderTag
+	 * @param charset
+	 * @throws MqWapperException
+	 */
+	public void sendMsgByOneWayOrderly(String topic, String tags, String keys, String msg, String orderTag,
+			String charset) throws MqWapperException
+	{
+		try
+		{
+			Message message = new Message(topic, tags, keys, msg.getBytes(charset));
+			producer.sendOneway(message, new StandardMessageQueueSelector(), orderTag);
+		}
+		catch (Exception e)
+		{
+			try
+			{
+				Thread.sleep(MQConstant.EXCEPTION_SLEEP_TIME);
+			}
+			catch (InterruptedException e1)
+			{
+				e1.printStackTrace();
+			}
+			throw new MqWapperException(e);
+		}
+	}
+
+	/**
 	 * 顺序消息，同类orderTag标记的消息接收有序,消息使用utf8编码
 	 * @param topic
 	 * @param tags
@@ -106,10 +151,10 @@ public class MQProducer
 	 * @throws MqBussinessException
 	 * @throws MqWapperException
 	 */
-	public void sendMsgByOrder(String topic, String tags, String keys, String msg, String orderTag)
+	public void sendMsgBySyncOrderly(String topic, String tags, String keys, String msg, String orderTag)
 			throws MqBussinessException, MqWapperException
 	{
-		this.sendMsgByOrder(topic, tags, keys, msg, orderTag, RemotingHelper.DEFAULT_CHARSET);
+		this.sendMsgBySyncOrderly(topic, tags, keys, msg, orderTag, RemotingHelper.DEFAULT_CHARSET);
 	}
 
 	/**
@@ -123,20 +168,13 @@ public class MQProducer
 	 * @throws MqBussinessException
 	 * @throws MqWapperException
 	 */
-	public void sendMsgByOrder(String topic, String tags, String keys, String msg, String orderTag, String charset)
-			throws MqBussinessException, MqWapperException
+	public void sendMsgBySyncOrderly(String topic, String tags, String keys, String msg, String orderTag,
+			String charset) throws MqBussinessException, MqWapperException
 	{
 		try
 		{
 			Message message = new Message(topic, tags, keys, msg.getBytes(charset));
-			SendResult sendResult = producer.send(message, new MessageQueueSelector() {
-				public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg)
-				{
-					Integer id = ((String) arg).hashCode();
-					int index = id % mqs.size();
-					return mqs.get(index);
-				}
-			}, orderTag);
+			SendResult sendResult = producer.send(message, new StandardMessageQueueSelector(), orderTag);
 			SendStatus sendStatus = sendResult.getSendStatus();
 			if (!Objects.equals(sendStatus, SendStatus.SEND_OK))
 			{
@@ -166,10 +204,10 @@ public class MQProducer
 	 * @throws MqBussinessException
 	 * @throws MqWapperException
 	 */
-	public void sendMsg(String topic, String tags, String keys, String msg)
+	public void sendMsgBySync(String topic, String tags, String keys, String msg)
 			throws MqBussinessException, MqWapperException
 	{
-		this.sendMsg(topic, tags, keys, msg, RemotingHelper.DEFAULT_CHARSET);
+		this.sendMsgBySync(topic, tags, keys, msg, RemotingHelper.DEFAULT_CHARSET);
 	}
 
 	/**
@@ -180,7 +218,8 @@ public class MQProducer
 	 * @param msg
 	 * @param charset
 	 */
-	public void sendMsg(String topic, String tags, String keys, String msg, String charset)
+	public void sendMsgBySync(String topic, String tags, String keys, String msg, String charset)
+			throws MqWapperException, MqBussinessException
 	{
 		try
 		{
@@ -206,6 +245,99 @@ public class MQProducer
 		}
 	}
 
+	/**
+	 * 异步返回,消息使用utf8编码
+	 * @param topic
+	 * @param tags
+	 * @param keys
+	 * @param msg
+	 * @param sendCallback
+	 */
+	public void sendMsgByAsync(String topic, String tags, String keys, String msg, SendCallback sendCallback)
+			throws MqWapperException
+	{
+		this.sendMsgByAsync(topic, tags, keys, msg, sendCallback, RemotingHelper.DEFAULT_CHARSET);
+	}
+
+	/**
+	 * 异步返回
+	 * @param topic
+	 * @param tags
+	 * @param keys
+	 * @param msg
+	 * @param sendCallback
+	 * @param charset
+	 */
+	public void sendMsgByAsync(String topic, String tags, String keys, String msg, SendCallback sendCallback,
+			String charset) throws MqWapperException
+	{
+		try
+		{
+			Message message = new Message(topic, tags, keys, msg.getBytes(charset));
+			producer.send(message, sendCallback);
+		}
+		catch (Exception e)
+		{
+			try
+			{
+				Thread.sleep(MQConstant.EXCEPTION_SLEEP_TIME);
+			}
+			catch (InterruptedException e1)
+			{
+				e1.printStackTrace();
+			}
+			throw new MqWapperException(e);
+		}
+	}
+
+	/**
+	 * 异步返回，顺序消息,utf-8编码
+	 * @param topic
+	 * @param tags
+	 * @param keys
+	 * @param msg
+	 * @param orderTag
+	 * @param sendCallback
+	 * @throws MqWapperException
+	 */
+	public void sendMsgByAsyncOrderly(String topic, String tags, String keys, String msg, String orderTag,
+			SendCallback sendCallback) throws MqWapperException
+	{
+		this.sendMsgByAsyncOrderly(topic, tags, keys, msg, orderTag, sendCallback, RemotingHelper.DEFAULT_CHARSET);
+	}
+
+	/**
+	 * 异步返回，顺序消息
+	 * @param topic
+	 * @param tags
+	 * @param keys
+	 * @param msg
+	 * @param orderTag
+	 * @param sendCallback
+	 * @param charset
+	 */
+	public void sendMsgByAsyncOrderly(String topic, String tags, String keys, String msg, String orderTag,
+			SendCallback sendCallback, String charset) throws MqWapperException
+	{
+		try
+		{
+			Message message = new Message(topic, tags, keys, msg.getBytes(charset));
+			producer.send(message, new StandardMessageQueueSelector(), orderTag, sendCallback);
+		}
+		catch (Exception e)
+		{
+			try
+			{
+				Thread.sleep(MQConstant.EXCEPTION_SLEEP_TIME);
+			}
+			catch (InterruptedException e1)
+			{
+				e1.printStackTrace();
+			}
+			throw new MqWapperException(e);
+		}
+	}
+
 	public void shutdown()
 	{
 		producer.shutdown();
@@ -216,7 +348,7 @@ public class MQProducer
 		MQProducer producer = new MQProducer("common_rocketMQ.properties");
 		try
 		{
-			producer.sendMsg("TopicTest", null, null, "RocketMQ test");
+			producer.sendMsgBySync("TopicTest", null, null, "RocketMQ test");
 			producer.shutdown();
 		}
 		catch (Exception e)

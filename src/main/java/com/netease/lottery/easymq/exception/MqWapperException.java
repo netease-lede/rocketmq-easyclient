@@ -1,7 +1,7 @@
 package com.netease.lottery.easymq.exception;
 
 @SuppressWarnings("serial")
-public class MqWapperException extends RuntimeException
+public class MqWapperException extends Exception
 {
 	public MqWapperException()
 	{

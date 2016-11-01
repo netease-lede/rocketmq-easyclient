@@ -1,7 +1,7 @@
 package com.netease.lottery.easymq.exception;
 
 @SuppressWarnings("serial")
-public class MqBussinessException extends RuntimeException
+public class MqBussinessException extends Exception
 {
 	public MqBussinessException()
 	{
