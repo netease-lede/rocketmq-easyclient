@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
 import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently;
-import com.netease.lottery.easymq.constant.MQConstant;
+import com.netease.lottery.easymq.common.constant.MQConstant;
 
 public class MQPushConsumer
 {
@@ -42,8 +42,7 @@ public class MQPushConsumer
 		}
 	}
 
-	public void start(String[] topics, MessageListenerConcurrently messageListenerConcurrently)
-			throws Exception
+	public void start(String[] topics, MessageListenerConcurrently messageListenerConcurrently) throws Exception
 	{
 		if (topics == null || topics.length <= 0 || messageListenerConcurrently == null)
 		{

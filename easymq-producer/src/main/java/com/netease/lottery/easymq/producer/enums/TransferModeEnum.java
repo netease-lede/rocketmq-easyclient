@@ -7,9 +7,9 @@ import com.alibaba.rocketmq.client.producer.SendCallback;
 import com.alibaba.rocketmq.client.producer.SendResult;
 import com.alibaba.rocketmq.client.producer.SendStatus;
 import com.alibaba.rocketmq.common.message.Message;
-import com.netease.lottery.easymq.constant.MQConstant;
-import com.netease.lottery.easymq.exception.MqBussinessException;
-import com.netease.lottery.easymq.exception.MqWapperException;
+import com.netease.lottery.easymq.common.constant.MQConstant;
+import com.netease.lottery.easymq.common.exception.MqBussinessException;
+import com.netease.lottery.easymq.common.exception.MqWapperException;
 import com.netease.lottery.easymq.producer.assist.StandardMessageQueueSelector;
 
 public enum TransferModeEnum

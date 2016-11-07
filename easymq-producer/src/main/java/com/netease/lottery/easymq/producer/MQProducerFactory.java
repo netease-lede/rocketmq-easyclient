@@ -6,8 +6,7 @@ import java.util.HashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.netease.lottery.easymq.constant.MQConstant;
-import com.netease.lottery.easymq.producer.MQProducer;
+import com.netease.lottery.easymq.common.constant.MQConstant;
 
 public class MQProducerFactory
 {

@@ -9,7 +9,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>easymq-consumer</artifactId>
-    <packaging>jar</packaging>
+	<packaging>jar</packaging>
 	<name>easymq-consumer</name>
 	<url>http://maven.apache.org</url>
 	<properties>
@@ -19,6 +19,18 @@
 		<dependency>
 			<groupId>com.netease.lottery</groupId>
 			<artifactId>easymq-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.rocketmq</groupId>
+			<artifactId>rocketmq-client</artifactId>
 		</dependency>
 	</dependencies>
 </project>

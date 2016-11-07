@@ -20,5 +20,13 @@
 			<groupId>com.netease.lottery</groupId>
 			<artifactId>easymq-common</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.rocketmq</groupId>
+			<artifactId>rocketmq-client</artifactId>
+		</dependency>
 	</dependencies>
 </project>

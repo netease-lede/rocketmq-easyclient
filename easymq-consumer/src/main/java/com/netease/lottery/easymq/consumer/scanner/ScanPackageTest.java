@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hamcrest.core.IsInstanceOf;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -22,8 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.SystemPropertyUtils;
 
 import com.google.common.collect.Sets;
-import com.netease.lottery.easymq.handler.MQConsumerAnnotation;
-import com.netease.lottery.easymq.handler.MQRecMsgHandler;
+import com.netease.lottery.easymq.consumer.handler.MQConsumerAnnotation;
 
 public class ScanPackageTest
 {
@@ -110,8 +108,9 @@ public class ScanPackageTest
 				continue;
 			}
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX
-					+ org.springframework.util.ClassUtils.convertClassNameToResourcePath(SystemPropertyUtils
-							.resolvePlaceholders(basePackage)) + "/" + DEFAULT_RESOURCE_PATTERN;
+					+ org.springframework.util.ClassUtils.convertClassNameToResourcePath(
+							SystemPropertyUtils.resolvePlaceholders(basePackage))
+					+ "/" + DEFAULT_RESOURCE_PATTERN;
 			try
 			{
 				Resource[] resources = resourcePatternResolver.getResources(packageSearchPath);
