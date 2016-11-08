@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.netease.lottery</groupId>
 	<artifactId>easymq-client</artifactId>
@@ -11,7 +10,8 @@
 		<module>easymq-producer</module>
 		<module>easymq-common</module>
 		<module>easymq-consumer</module>
-	</modules>
+    <module>easymq-example</module>
+  </modules>
 	<properties>
 		<spring.version>4.2.0.RELEASE</spring.version>
 		<rocketmq-client.version>3.5.8</rocketmq-client.version>

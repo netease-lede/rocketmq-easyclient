@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -20,12 +23,16 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.util.SystemPropertyUtils;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.netease.lottery.easymq.consumer.handler.MQConsumerAnnotation;
+import com.netease.lottery.easymq.common.constant.MQConstant;
+import com.netease.lottery.easymq.consumer.bean.MQConsumerConfigBean;
+import com.netease.lottery.easymq.consumer.handler.MQRecMsgHandler;
+import com.netease.lottery.easymq.consumer.handler.annotation.MQConsumerMeta;
 
-public class ScanPackageTest
+public class ScanPackage
 {
-	private final static Log log = LogFactory.getLog(ScanPackageTest.class);
+	private final static Log LOG = LogFactory.getLog(ScanPackage.class);
 	//扫描  scanPackages 下的文件的匹配符
 	protected static final String DEFAULT_RESOURCE_PATTERN = "**/*.class";
 
@@ -123,7 +130,7 @@ public class ScanPackageTest
 			}
 			catch (Exception e)
 			{
-				log.error("获取包下面的类信息失败,package:" + basePackage, e);
+				LOG.error("获取包下面的类信息失败,package:" + basePackage, e);
 			}
 
 		}
@@ -202,7 +209,7 @@ public class ScanPackageTest
 		}
 		catch (Exception e)
 		{
-			log.error("根据resource获取类名称失败", e);
+			LOG.error("根据resource获取类名称失败", e);
 		}
 		return null;
 	}
@@ -241,16 +248,127 @@ public class ScanPackageTest
 		Annotation annotation = clz.getAnnotation(anno);
 		if (annotation != null)
 		{
-			System.out.println(fullClassName + " is true");
+			//			System.out.println(fullClassName + " is true");
 			return true;
 		}
 		return false;
+	}
+
+	public static Map<String, MQConsumerConfigBean> genConsumerConfigList(String packages)
+	{
+		Map<String, MQConsumerConfigBean> consumerConfigs = Maps.newHashMap();
+		Set<String> consumerCallbackNames = findAnnotationClass(packages, MQConsumerMeta.class);
+		ArrayList<String> consumerCallbackNamesList = new ArrayList<>(consumerCallbackNames);
+		Collections.sort(consumerCallbackNamesList);
+		System.out.println("annotation class:" + consumerCallbackNames);
+		for (String callbackName : consumerCallbackNamesList)
+		{
+			try
+			{
+				Class<?> cc = Class.forName(callbackName);
+				Class<?> interfaceClass = Class.forName(MQConstant.CONSUMER_INTERFACE_CLASSNAME);
+				boolean rightStatus = Arrays.asList(cc.getInterfaces()).contains(interfaceClass);
+				if (!rightStatus)
+				{
+					LOG.fatal("easymq wrong. class:" + callbackName + " not implemets"
+							+ MQConstant.CONSUMER_INTERFACE_CLASSNAME);
+					continue;
+				}
+				MQConsumerMeta meta = cc.getAnnotation(MQConsumerMeta.class);
+				if (meta == null)
+				{
+					LOG.fatal("easymq wrong. class:" + callbackName + " annotation analysis wrong.");
+					continue;
+				}
+				MQRecMsgHandler handler = (MQRecMsgHandler) cc.newInstance();
+				consumerConfigs = genConsumerConfigList(consumerConfigs, meta, handler);
+			}
+			catch (Exception e)
+			{
+				LOG.fatal("easymq wrong. analysis class:" + callbackName, e);
+			}
+		}
+		return consumerConfigs;
+	}
+
+	/**
+	 * 每组一个配置,返回map的键为groupName
+	 * @param consumerConfigs
+	 * @param meta
+	 * @param handler
+	 * @return
+	 */
+	private static Map<String, MQConsumerConfigBean> genConsumerConfigList(
+			Map<String, MQConsumerConfigBean> consumerConfigs, MQConsumerMeta meta, MQRecMsgHandler handler)
+	{
+		if (consumerConfigs == null)
+		{
+			consumerConfigs = Maps.newHashMap();
+		}
+		String topic = meta.topic();
+		String group = meta.group();
+		boolean orderly = meta.isOrderly();
+		boolean broadcast = meta.isBroadcast();
+		int consumerThreadCount = meta.consumerThreadCount();
+		String groupName = genGroupName(group, orderly, broadcast);
+		if (consumerConfigs.containsKey(groupName))
+		{
+			//该组配置存在，更新
+			MQConsumerConfigBean configBean = consumerConfigs.get(groupName);
+			Map<String, MQRecMsgHandler> topicHandler = configBean.getTopicHandler();
+			if (topicHandler == null)
+			{
+				LOG.fatal("easymq wrong. topic handler is null.");
+				topicHandler = Maps.newHashMap();
+			}
+			if (topicHandler.containsKey(topic))
+			{
+				LOG.fatal("easymq wrong. topic handler duplicate. topic:" + topic);
+				return consumerConfigs;
+			}
+			else
+			{
+				topicHandler.put(topic, handler);
+			}
+			if (consumerThreadCount > configBean.getConsumerThreadCount())
+			{
+				configBean.setConsumerThreadCount(consumerThreadCount);
+			}
+		}
+		else
+		{
+			//该组配置不存在，生成
+			MQConsumerConfigBean configBean = new MQConsumerConfigBean();
+			configBean.setGroupName(groupName);
+			configBean.setConsumerThreadCount(consumerThreadCount);
+			configBean.setGroup(group);
+			configBean.setOrderly(orderly);
+			configBean.setBroadcast(broadcast);
+			Map<String, MQRecMsgHandler> topicHandler = Maps.newHashMap();
+			topicHandler.put(topic, handler);
+		}
+		return consumerConfigs;
+	}
+
+	private static String genGroupName(String group, boolean orderly, boolean broadcast)
+	{
+		String groupName = group;
+		if (orderly)
+		{
+			groupName = groupName + MQConstant.CONSUMER_GROUPNAME_SEP + MQConstant.CONSUMER_ORDERLY_TRUE;
+		}
+		if (broadcast)
+		{
+			groupName = groupName + MQConstant.CONSUMER_GROUPNAME_SEP + MQConstant.CONSUMER_BROADCAST_TRUE;
+		}
+		return groupName;
 	}
 
 	public static void main(String[] args)
 	{
 		String packages = "com.netease.lottery.easymq";
 		System.out.println("检测前的package: " + packages);
-		System.out.println("annotation class:" + findAnnotationClass(packages, MQConsumerAnnotation.class));
+		Map<String, MQConsumerConfigBean> genConsumerConfigList = genConsumerConfigList(packages);
+
 	}
 }

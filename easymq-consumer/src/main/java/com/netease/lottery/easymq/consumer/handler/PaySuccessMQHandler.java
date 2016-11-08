@@ -2,7 +2,9 @@ package com.netease.lottery.easymq.consumer.handler;
 
 import java.util.List;
 
-@MQConsumerAnnotation(topic = "paySuccessTopic", tags = "*")
+import com.netease.lottery.easymq.consumer.handler.annotation.MQConsumerMeta;
+
+@MQConsumerMeta(topic = "paySuccessTopic", group = "group1")
 public class PaySuccessMQHandler implements MQRecMsgHandler
 {
 	public void handle(List<String> msg) throws Exception
