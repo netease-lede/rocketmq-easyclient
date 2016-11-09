@@ -14,11 +14,19 @@ import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently
 import com.alibaba.rocketmq.common.message.MessageExt;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
+import com.netease.lottery.easymq.consumer.bean.MQConsumerConfigBean;
 import com.netease.lottery.easymq.consumer.handler.MQRecMsgHandler;
 
 public class MQConsumerGroup
 {
-	private Log LOG = LogFactory.getLog(MQConsumerGroup.class);
+	private static final Log LOG = LogFactory.getLog(MQConsumerGroup.class);
+
+	/**
+	 * 消费者配置
+	 */
+	private MQConsumerConfigBean consumerConfigBean;
+
 	/**
 	 * 消费组名称
 	 */
@@ -48,16 +56,27 @@ public class MQConsumerGroup
 	 */
 	private List<MQPushConsumer> consumerList = Lists.newArrayList();
 
-	public void initConsumerGroup() throws Exception
+	public void initConsumerGroup()
 	{
 		if (consumerNumber == null || consumerNumber <= 0)
 		{
-			throw new Exception("");
+			String warn = "easymq wrong. consumerNumber:" + consumerNumber;
+			LOG.fatal(warn);
+			throw new MqConsumerConfigException(warn);
 		}
 		for (int index = 1; index <= consumerNumber; index++)
 		{
 			MQPushConsumer consumer = MQConsumerFactory.getFactory().getMQConsumer(consumerConfig);
-			consumer.start(topics, messageListenerConcurrently);
+			try
+			{
+				//TODO
+				consumer.start(topics, messageListenerConcurrently);
+			}
+			catch (Exception e)
+			{
+				//TODO
+				e.printStackTrace();
+			}
 			consumerList.add(consumer);
 		}
 	}
@@ -76,6 +95,16 @@ public class MQConsumerGroup
 		{
 			handlerList.add(handler);
 		}
+	}
+
+	public MQConsumerConfigBean getConsumerConfigBean()
+	{
+		return consumerConfigBean;
+	}
+
+	public void setConsumerConfigBean(MQConsumerConfigBean consumerConfigBean)
+	{
+		this.consumerConfigBean = consumerConfigBean;
 	}
 
 	public Properties getConsumerConfig()

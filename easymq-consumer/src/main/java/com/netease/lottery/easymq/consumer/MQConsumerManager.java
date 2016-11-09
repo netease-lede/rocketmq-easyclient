@@ -33,22 +33,14 @@ public class MQConsumerManager
 				MQConstant.CONFIG_CONSUMER_SCANPACKAGE_DEFAULT);
 		List<MQConsumerConfigBean> genConsumerConfigList = ScanPackage.genConsumerConfigList(packages);
 
-		for (MQConsumerConfigBean consumerConfig : genConsumerConfigList)
+		for (MQConsumerConfigBean consumerConfigBean : genConsumerConfigList)
 		{
 			MQConsumerGroup consumerGroup = new MQConsumerGroup();
-
-		}
-		MQConsumerGroup consumerGroup = new MQConsumerGroup();
-		consumerGroup.setConsumerConfig(props);
-		consumerGroup.setConsumerGroupName("defaultConsumerGroup");
-		consumerGroup.setConsumerNumber(1);
-		try
-		{
+			consumerGroup.setConsumerConfig(props);
+			consumerGroup.setConsumerNumber(1);
+			consumerGroup.setConsumerGroupName("defaultConsumerGroup");
+			consumerGroup.setConsumerConfigBean(consumerConfigBean);
 			consumerGroup.initConsumerGroup();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
 		}
 	}
 
