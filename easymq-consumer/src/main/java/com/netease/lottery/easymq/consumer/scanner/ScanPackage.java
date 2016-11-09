@@ -26,6 +26,7 @@ import org.springframework.util.SystemPropertyUtils;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.netease.lottery.easymq.common.constant.MQConstant;
+import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
 import com.netease.lottery.easymq.consumer.bean.MQConsumerConfigBean;
 import com.netease.lottery.easymq.consumer.handler.MQRecMsgHandler;
 import com.netease.lottery.easymq.consumer.handler.annotation.MQConsumerMeta;
@@ -318,13 +319,15 @@ public class ScanPackage
 			Map<String, MQRecMsgHandler> topicHandler = configBean.getTopicHandler();
 			if (topicHandler == null)
 			{
-				LOG.fatal("easymq wrong. topic handler is null.");
-				topicHandler = Maps.newHashMap();
+				String warn = "easymq wrong. topic handler is null. topic:" + topic;
+				LOG.fatal(warn);
+				throw new MqConsumerConfigException(warn);
 			}
 			if (topicHandler.containsKey(topic))
 			{
-				LOG.fatal("easymq wrong. topic handler duplicate. topic:" + topic);
-				return consumerConfigs;
+				String warn = "easymq wrong. topic handler duplicate. topic:" + topic;
+				LOG.fatal(warn);
+				throw new MqConsumerConfigException(warn);
 			}
 			else
 			{
@@ -346,6 +349,8 @@ public class ScanPackage
 			configBean.setBroadcast(broadcast);
 			Map<String, MQRecMsgHandler> topicHandler = Maps.newHashMap();
 			topicHandler.put(topic, handler);
+			configBean.setTopicHandler(topicHandler);
+			consumerConfigs.put(groupName, configBean);
 		}
 		return consumerConfigs;
 	}
@@ -369,6 +374,7 @@ public class ScanPackage
 		String packages = "com.netease.lottery.easymq";
 		System.out.println("检测前的package: " + packages);
 		Map<String, MQConsumerConfigBean> genConsumerConfigList = genConsumerConfigList(packages);
+		System.out.println(genConsumerConfigList);
 
 	}
 }

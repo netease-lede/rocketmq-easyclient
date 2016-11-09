@@ -61,8 +61,9 @@ public class MQProducerFactory
 			File configDir = new File(filePath);
 			if (!configDir.exists())
 			{
-				LOG.error("#No RocketMQ config dir find.");
-				throw new Exception("#RocketMQ is not exist.");
+				String warn = "easymq wrong. product config dir find. filePath:" + filePath;
+				LOG.fatal(warn);
+				throw new Exception(warn);
 			}
 			if (configDir.isFile())
 			{

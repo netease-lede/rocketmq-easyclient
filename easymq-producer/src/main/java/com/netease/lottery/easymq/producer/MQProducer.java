@@ -34,9 +34,9 @@ public class MQProducer
 			String filePath = this.getClass().getClassLoader().getResource(MQConstant.CONFIG_DIR).getPath() + "/"
 					+ MQConfigFileName;
 			props.load(new FileInputStream(filePath));
-			producer = new DefaultMQProducer(props.getProperty("rocket.producer.groupname"));
-			producer.setNamesrvAddr(props.getProperty("rocket.name.server"));
-			producer.setInstanceName(props.getProperty("rocket.instance.name"));
+			producer = new DefaultMQProducer(props.getProperty("easymq.producer.groupname"));
+			producer.setNamesrvAddr(props.getProperty("easymq.name.server"));
+			producer.setInstanceName(props.getProperty("easymq.instance.name"));
 			producer.start();
 			LOG.info(props.getProperty("rocket.instance.name") + " started success");
 		}
