@@ -1,5 +1,7 @@
 package com.netease.lottery.easymq.consumer;
 
+import java.util.Properties;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -18,17 +20,17 @@ public class MQConsumerFactory
 		return factory;
 	}
 
-	public MQPushConsumer getMQConsumer(String consumerConfigFileName)
+	public MQPushConsumer getMQConsumer(Properties consumerConfig)
 	{
 		MQPushConsumer mqPushConsumer = null;
 		try
 		{
-			mqPushConsumer = new MQPushConsumer(consumerConfigFileName);
-			LOG.info("#Load RocketMQ config:" + consumerConfigFileName);
+			mqPushConsumer = new MQPushConsumer(consumerConfig);
+			LOG.info("#Load RocketMQ config:" + consumerConfig);
 		}
 		catch (Exception e)
 		{
-			LOG.fatal("#Builder producer:" + consumerConfigFileName + " error.Cause:", e);
+			LOG.fatal("#Builder producer:" + consumerConfig + " error.Cause:", e);
 		}
 		return mqPushConsumer;
 	}

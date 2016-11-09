@@ -2,6 +2,7 @@ package com.netease.lottery.easymq.consumer;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
@@ -35,9 +36,9 @@ public class MQConsumerGroup
 	 */
 	private MessageListenerConcurrently messageListenerConcurrently;
 	/**
-	 * 消费组配置文件名
+	 * 消费组配置文件
 	 */
-	private String consumerConfigFileName;
+	private Properties consumerConfig;
 	/**
 	 * 消费组订阅的Topic列表
 	 */
@@ -55,7 +56,7 @@ public class MQConsumerGroup
 		}
 		for (int index = 1; index <= consumerNumber; index++)
 		{
-			MQPushConsumer consumer = MQConsumerFactory.getFactory().getMQConsumer(consumerConfigFileName);
+			MQPushConsumer consumer = MQConsumerFactory.getFactory().getMQConsumer(consumerConfig);
 			consumer.start(topics, messageListenerConcurrently);
 			consumerList.add(consumer);
 		}
@@ -77,6 +78,16 @@ public class MQConsumerGroup
 		}
 	}
 
+	public Properties getConsumerConfig()
+	{
+		return consumerConfig;
+	}
+
+	public void setConsumerConfig(Properties consumerConfig)
+	{
+		this.consumerConfig = consumerConfig;
+	}
+
 	public String getConsumerGroupName()
 	{
 		return consumerGroupName;
@@ -95,16 +106,6 @@ public class MQConsumerGroup
 	public void setConsumerNumber(Integer consumerNumber)
 	{
 		this.consumerNumber = consumerNumber;
-	}
-
-	public String getConsumerConfigFileName()
-	{
-		return consumerConfigFileName;
-	}
-
-	public void setConsumerConfigFileName(String consumerConfigFileName)
-	{
-		this.consumerConfigFileName = consumerConfigFileName;
 	}
 
 	public Map<String, List<MQRecMsgHandler>> getHandlerMap()

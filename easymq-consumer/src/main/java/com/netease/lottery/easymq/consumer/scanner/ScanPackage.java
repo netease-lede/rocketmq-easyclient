@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -255,13 +256,13 @@ public class ScanPackage
 		return false;
 	}
 
-	public static Map<String, MQConsumerConfigBean> genConsumerConfigList(String packages)
+	public static List<MQConsumerConfigBean> genConsumerConfigList(String packages)
 	{
 		Map<String, MQConsumerConfigBean> consumerConfigs = Maps.newHashMap();
 		Set<String> consumerCallbackNames = findAnnotationClass(packages, MQConsumerMeta.class);
 		ArrayList<String> consumerCallbackNamesList = new ArrayList<>(consumerCallbackNames);
 		Collections.sort(consumerCallbackNamesList);
-		System.out.println("annotation class:" + consumerCallbackNames);
+		//System.out.println("annotation class:" + consumerCallbackNames);
 		for (String callbackName : consumerCallbackNamesList)
 		{
 			try
@@ -289,7 +290,7 @@ public class ScanPackage
 				LOG.fatal("easymq wrong. analysis class:" + callbackName, e);
 			}
 		}
-		return consumerConfigs;
+		return new ArrayList<>(consumerConfigs.values());
 	}
 
 	/**
@@ -367,14 +368,5 @@ public class ScanPackage
 			groupName = groupName + MQConstant.CONSUMER_GROUPNAME_SEP + MQConstant.CONSUMER_BROADCAST_TRUE;
 		}
 		return groupName;
-	}
-
-	public static void main(String[] args)
-	{
-		String packages = "com.netease.lottery.easymq";
-		System.out.println("检测前的package: " + packages);
-		Map<String, MQConsumerConfigBean> genConsumerConfigList = genConsumerConfigList(packages);
-		System.out.println(genConsumerConfigList);
-
 	}
 }
