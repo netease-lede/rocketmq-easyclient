@@ -38,7 +38,6 @@ public class MQConsumerManager
 			MQConsumerGroup consumerGroup = new MQConsumerGroup();
 			consumerGroup.setConsumerConfig(props);
 			consumerGroup.setConsumerNumber(1);
-			consumerGroup.setConsumerGroupName("defaultConsumerGroup");
 			consumerGroup.setConsumerConfigBean(consumerConfigBean);
 			consumerGroup.initConsumerGroup();
 		}

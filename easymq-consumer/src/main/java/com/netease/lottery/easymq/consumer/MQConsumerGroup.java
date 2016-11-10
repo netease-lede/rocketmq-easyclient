@@ -64,13 +64,15 @@ public class MQConsumerGroup
 			LOG.fatal(warn);
 			throw new MqConsumerConfigException(warn);
 		}
+		this.setConsumerGroupName(consumerConfigBean.getGroupName());
 		for (int index = 1; index <= consumerNumber; index++)
 		{
-			MQPushConsumer consumer = MQConsumerFactory.getFactory().getMQConsumer(prop, consumerConfigBean);
+			MQPushConsumer consumer = MQConsumerFactory.getFactory().getMQConsumer(prop);
 			try
 			{
+				consumer.loadConfigBean(consumerConfigBean);
 				//TODO
-				consumer.start(topics, messageListenerConcurrently);
+				consumer.start();
 			}
 			catch (Exception e)
 			{

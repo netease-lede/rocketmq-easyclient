@@ -12,7 +12,8 @@ public class MQConsumerConfigBean
 	private String group;
 	private boolean isOrderly;
 	private boolean isBroadcast;
-	private int consumerThreadCount;
+	private int consumerThreadCountMin;
+	private int consumerThreadCountMax;
 
 	public Map<String, List<MQRecMsgHandler>> getTopicHandler()
 	{
@@ -64,22 +65,32 @@ public class MQConsumerConfigBean
 		this.isBroadcast = isBroadcast;
 	}
 
-	public int getConsumerThreadCount()
+	public int getConsumerThreadCountMin()
 	{
-		return consumerThreadCount;
+		return consumerThreadCountMin;
 	}
 
-	public void setConsumerThreadCount(int consumerThreadCount)
+	public void setConsumerThreadCountMin(int consumerThreadCountMin)
 	{
-		this.consumerThreadCount = consumerThreadCount;
+		this.consumerThreadCountMin = consumerThreadCountMin;
+	}
+
+	public int getConsumerThreadCountMax()
+	{
+		return consumerThreadCountMax;
+	}
+
+	public void setConsumerThreadCountMax(int consumerThreadCountMax)
+	{
+		this.consumerThreadCountMax = consumerThreadCountMax;
 	}
 
 	@Override
 	public String toString()
 	{
 		return "MQConsumerConfigBean [topicHandler=" + topicHandler + ", groupName=" + groupName + ", group=" + group
-				+ ", isOrderly=" + isOrderly + ", isBroadcast=" + isBroadcast + ", consumerThreadCount="
-				+ consumerThreadCount + "]";
+				+ ", isOrderly=" + isOrderly + ", isBroadcast=" + isBroadcast + ", consumerThreadCountMin="
+				+ consumerThreadCountMin + ", consumerThreadCountMax=" + consumerThreadCountMax + "]";
 	}
 
 }

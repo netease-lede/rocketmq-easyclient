@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
 import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+import com.alibaba.rocketmq.client.exception.MQClientException;
 import com.netease.lottery.easymq.consumer.bean.MQConsumerConfigBean;
 
 public class MQPushConsumer
@@ -15,12 +16,12 @@ public class MQPushConsumer
 
 	private DefaultMQPushConsumer consumer;
 
-	public MQPushConsumer(Properties props, MQConsumerConfigBean consumerConfigBean)
+	public MQPushConsumer(Properties props)
 	{
-		init(props, consumerConfigBean);
+		init(props);
 	}
 
-	private void init(Properties props, MQConsumerConfigBean consumerConfigBean)
+	private void init(Properties props)
 	{
 		try
 		{
@@ -36,6 +37,14 @@ public class MQPushConsumer
 		}
 	}
 
+	public void loadConfigBean(MQConsumerConfigBean consumerConfigBean)
+	{
+		//TODO
+		consumer.setConsumerGroup(consumerConfigBean.getGroupName());
+		consumer.setConsumeThreadMin(consumerConfigBean.getConsumerThreadCountMin());
+		consumer.setConsumeThreadMax(consumerConfigBean.getConsumerThreadCountMax());
+	}
+
 	public void start(String[] topics, MessageListenerConcurrently messageListenerConcurrently) throws Exception
 	{
 		if (topics == null || topics.length <= 0 || messageListenerConcurrently == null)
@@ -47,6 +56,11 @@ public class MQPushConsumer
 			consumer.subscribe(topic, "*");
 		}
 		consumer.registerMessageListener(messageListenerConcurrently);
+		consumer.start();
+	}
+
+	public void start() throws MQClientException
+	{
 		consumer.start();
 	}
 

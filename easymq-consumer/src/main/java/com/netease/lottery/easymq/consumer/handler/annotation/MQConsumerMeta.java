@@ -19,6 +19,8 @@ public @interface MQConsumerMeta
 
 	boolean isBroadcast() default false;
 
-	int consumerThreadCount() default 20;
+	int consumerThreadCountMin() default 10;
+
+	int consumerThreadCountMax() default 20;
 
 }

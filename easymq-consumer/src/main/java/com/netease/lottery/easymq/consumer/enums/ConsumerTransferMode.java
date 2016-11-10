@@ -58,14 +58,6 @@ public enum ConsumerTransferMode
 			consumer.setMessageListener(listener);
 		}
 
-	},
-	PUSH_BROADCAST
-	{
-		@Override
-		public void regestHandlers(DefaultMQPushConsumer consumer, Map<String, List<MQRecMsgHandler>> topicHandlers)
-		{
-
-		}
 	};
 	private ConsumerTransferMode()
 	{

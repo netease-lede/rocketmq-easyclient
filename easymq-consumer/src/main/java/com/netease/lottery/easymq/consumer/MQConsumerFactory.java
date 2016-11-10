@@ -5,8 +5,6 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.netease.lottery.easymq.consumer.bean.MQConsumerConfigBean;
-
 public class MQConsumerFactory
 {
 	private Log LOG = LogFactory.getLog(MQConsumerFactory.class);
@@ -22,12 +20,12 @@ public class MQConsumerFactory
 		return factory;
 	}
 
-	public MQPushConsumer getMQConsumer(Properties prop, MQConsumerConfigBean consumerConfigBean)
+	public MQPushConsumer getMQConsumer(Properties prop)
 	{
 		MQPushConsumer mqPushConsumer = null;
 		try
 		{
-			mqPushConsumer = new MQPushConsumer(prop, consumerConfigBean);
+			mqPushConsumer = new MQPushConsumer(prop);
 			LOG.info("#Load RocketMQ config:" + prop);
 		}
 		catch (Exception e)

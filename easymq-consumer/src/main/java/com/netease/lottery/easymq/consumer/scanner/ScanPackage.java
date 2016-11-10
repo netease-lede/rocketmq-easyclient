@@ -312,7 +312,8 @@ public class ScanPackage
 		String group = meta.group();
 		boolean orderly = meta.isOrderly();
 		boolean broadcast = meta.isBroadcast();
-		int consumerThreadCount = meta.consumerThreadCount();
+		int consumerThreadCountMin = meta.consumerThreadCountMin();
+		int consumerThreadCountMax = meta.consumerThreadCountMax();
 		String groupName = genGroupName(group, orderly, broadcast);
 		if (consumerConfigs.containsKey(groupName))
 		{
@@ -336,9 +337,13 @@ public class ScanPackage
 				handlers.add(handler);
 				topicHandler.put(topic, handlers);
 			}
-			if (consumerThreadCount > configBean.getConsumerThreadCount())
+			if (consumerThreadCountMin > configBean.getConsumerThreadCountMin())
 			{
-				configBean.setConsumerThreadCount(consumerThreadCount);
+				configBean.setConsumerThreadCountMin(consumerThreadCountMin);
+			}
+			if (consumerThreadCountMax > configBean.getConsumerThreadCountMax())
+			{
+				configBean.setConsumerThreadCountMax(consumerThreadCountMin);
 			}
 		}
 		else
@@ -346,7 +351,8 @@ public class ScanPackage
 			//该组配置不存在，生成
 			MQConsumerConfigBean configBean = new MQConsumerConfigBean();
 			configBean.setGroupName(groupName);
-			configBean.setConsumerThreadCount(consumerThreadCount);
+			configBean.setConsumerThreadCountMin(consumerThreadCountMin);
+			configBean.setConsumerThreadCountMax(consumerThreadCountMax);
 			configBean.setGroup(group);
 			configBean.setOrderly(orderly);
 			configBean.setBroadcast(broadcast);
