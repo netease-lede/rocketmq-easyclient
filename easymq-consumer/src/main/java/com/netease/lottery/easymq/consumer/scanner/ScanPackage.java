@@ -24,6 +24,7 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.util.SystemPropertyUtils;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.netease.lottery.easymq.common.constant.MQConstant;
@@ -317,7 +318,7 @@ public class ScanPackage
 		{
 			//该组配置存在，更新
 			MQConsumerConfigBean configBean = consumerConfigs.get(groupName);
-			Map<String, MQRecMsgHandler> topicHandler = configBean.getTopicHandler();
+			Map<String, List<MQRecMsgHandler>> topicHandler = configBean.getTopicHandler();
 			if (topicHandler == null)
 			{
 				String warn = "easymq wrong. topic handler is null. topic:" + topic;
@@ -326,13 +327,14 @@ public class ScanPackage
 			}
 			if (topicHandler.containsKey(topic))
 			{
-				String warn = "easymq wrong. topic handler duplicate. topic:" + topic;
-				LOG.fatal(warn);
-				throw new MqConsumerConfigException(warn);
+				List<MQRecMsgHandler> handlers = topicHandler.get(topic);
+				handlers.add(handler);
 			}
 			else
 			{
-				topicHandler.put(topic, handler);
+				List<MQRecMsgHandler> handlers = Lists.newArrayList();
+				handlers.add(handler);
+				topicHandler.put(topic, handlers);
 			}
 			if (consumerThreadCount > configBean.getConsumerThreadCount())
 			{
@@ -348,8 +350,10 @@ public class ScanPackage
 			configBean.setGroup(group);
 			configBean.setOrderly(orderly);
 			configBean.setBroadcast(broadcast);
-			Map<String, MQRecMsgHandler> topicHandler = Maps.newHashMap();
-			topicHandler.put(topic, handler);
+			Map<String, List<MQRecMsgHandler>> topicHandler = Maps.newHashMap();
+			List<MQRecMsgHandler> handlers = Lists.newArrayList();
+			handlers.add(handler);
+			topicHandler.put(topic, handlers);
 			configBean.setTopicHandler(topicHandler);
 			consumerConfigs.put(groupName, configBean);
 		}

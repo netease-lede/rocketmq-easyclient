@@ -1,24 +1,25 @@
 package com.netease.lottery.easymq.consumer.bean;
 
+import java.util.List;
 import java.util.Map;
 
 import com.netease.lottery.easymq.consumer.handler.MQRecMsgHandler;
 
 public class MQConsumerConfigBean
 {
-	private Map<String, MQRecMsgHandler> topicHandler;
+	private Map<String, List<MQRecMsgHandler>> topicHandler;
 	private String groupName;
 	private String group;
 	private boolean isOrderly;
 	private boolean isBroadcast;
 	private int consumerThreadCount;
 
-	public Map<String, MQRecMsgHandler> getTopicHandler()
+	public Map<String, List<MQRecMsgHandler>> getTopicHandler()
 	{
 		return topicHandler;
 	}
 
-	public void setTopicHandler(Map<String, MQRecMsgHandler> topicHandler)
+	public void setTopicHandler(Map<String, List<MQRecMsgHandler>> topicHandler)
 	{
 		this.topicHandler = topicHandler;
 	}

@@ -5,6 +5,8 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.netease.lottery.easymq.consumer.bean.MQConsumerConfigBean;
+
 public class MQConsumerFactory
 {
 	private Log LOG = LogFactory.getLog(MQConsumerFactory.class);
@@ -20,17 +22,18 @@ public class MQConsumerFactory
 		return factory;
 	}
 
-	public MQPushConsumer getMQConsumer(Properties consumerConfig)
+	public MQPushConsumer getMQConsumer(Properties prop, MQConsumerConfigBean consumerConfigBean)
 	{
 		MQPushConsumer mqPushConsumer = null;
 		try
 		{
-			mqPushConsumer = new MQPushConsumer(consumerConfig);
-			LOG.info("#Load RocketMQ config:" + consumerConfig);
+			mqPushConsumer = new MQPushConsumer(prop, consumerConfigBean);
+			LOG.info("#Load RocketMQ config:" + prop);
 		}
 		catch (Exception e)
 		{
-			LOG.fatal("#Builder producer:" + consumerConfig + " error.Cause:", e);
+			LOG.fatal("#Builder producer:" + prop + " error.Cause:", e);
+			throw e;
 		}
 		return mqPushConsumer;
 	}

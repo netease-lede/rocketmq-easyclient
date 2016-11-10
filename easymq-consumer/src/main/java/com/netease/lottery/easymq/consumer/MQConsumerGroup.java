@@ -46,7 +46,7 @@ public class MQConsumerGroup
 	/**
 	 * 消费组配置文件
 	 */
-	private Properties consumerConfig;
+	private Properties prop;
 	/**
 	 * 消费组订阅的Topic列表
 	 */
@@ -66,7 +66,7 @@ public class MQConsumerGroup
 		}
 		for (int index = 1; index <= consumerNumber; index++)
 		{
-			MQPushConsumer consumer = MQConsumerFactory.getFactory().getMQConsumer(consumerConfig);
+			MQPushConsumer consumer = MQConsumerFactory.getFactory().getMQConsumer(prop, consumerConfigBean);
 			try
 			{
 				//TODO
@@ -109,12 +109,12 @@ public class MQConsumerGroup
 
 	public Properties getConsumerConfig()
 	{
-		return consumerConfig;
+		return prop;
 	}
 
 	public void setConsumerConfig(Properties consumerConfig)
 	{
-		this.consumerConfig = consumerConfig;
+		this.prop = consumerConfig;
 	}
 
 	public String getConsumerGroupName()

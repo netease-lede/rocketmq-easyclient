@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
 import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+import com.netease.lottery.easymq.consumer.bean.MQConsumerConfigBean;
 
 public class MQPushConsumer
 {
@@ -14,12 +15,12 @@ public class MQPushConsumer
 
 	private DefaultMQPushConsumer consumer;
 
-	public MQPushConsumer(Properties props)
+	public MQPushConsumer(Properties props, MQConsumerConfigBean consumerConfigBean)
 	{
-		init(props);
+		init(props, consumerConfigBean);
 	}
 
-	private void init(Properties props)
+	private void init(Properties props, MQConsumerConfigBean consumerConfigBean)
 	{
 		try
 		{

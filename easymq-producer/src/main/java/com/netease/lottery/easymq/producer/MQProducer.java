@@ -12,7 +12,7 @@ import com.alibaba.rocketmq.remoting.common.RemotingHelper;
 import com.netease.lottery.easymq.common.constant.MQConstant;
 import com.netease.lottery.easymq.common.exception.MqBussinessException;
 import com.netease.lottery.easymq.common.exception.MqWapperException;
-import com.netease.lottery.easymq.producer.enums.TransferModeEnum;
+import com.netease.lottery.easymq.producer.enums.ProducerTransferMode;
 
 public class MQProducer
 {
@@ -57,7 +57,7 @@ public class MQProducer
 	 */
 	public void sendMsg(String topic, String keys, String msg) throws MqWapperException, MqBussinessException
 	{
-		TransferModeEnum.SYNC.sendMsg(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg,
+		ProducerTransferMode.SYNC.sendMsg(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg,
 				RemotingHelper.DEFAULT_CHARSET, null);
 	}
 
@@ -73,7 +73,7 @@ public class MQProducer
 	public void sendMsg(String topic, String keys, String msg, String charset)
 			throws MqWapperException, MqBussinessException
 	{
-		TransferModeEnum.SYNC.sendMsg(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, charset, null);
+		ProducerTransferMode.SYNC.sendMsg(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, charset, null);
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class MQProducer
 	 * @throws MqWapperException
 	 * @throws MqBussinessException
 	 */
-	public void sendMsg(String topic, String keys, String msg, String charset, TransferModeEnum transferMode,
+	public void sendMsg(String topic, String keys, String msg, String charset, ProducerTransferMode transferMode,
 			SendCallback callback) throws MqWapperException, MqBussinessException
 	{
 		transferMode.sendMsg(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, charset, callback);
@@ -105,7 +105,7 @@ public class MQProducer
 	public void sendMsgOrderly(String topic, String keys, String msg, String orderTag)
 			throws MqBussinessException, MqWapperException
 	{
-		TransferModeEnum.SYNC.sendMsgOrderly(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, orderTag,
+		ProducerTransferMode.SYNC.sendMsgOrderly(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, orderTag,
 				RemotingHelper.DEFAULT_CHARSET, null);
 	}
 
@@ -122,7 +122,7 @@ public class MQProducer
 	public void sendMsgOrderly(String topic, String keys, String msg, String orderTag, String charset)
 			throws MqBussinessException, MqWapperException
 	{
-		TransferModeEnum.SYNC.sendMsgOrderly(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, orderTag,
+		ProducerTransferMode.SYNC.sendMsgOrderly(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, orderTag,
 				charset, null);
 	}
 
@@ -139,7 +139,7 @@ public class MQProducer
 	 * @throws MqBussinessException
 	 */
 	public void sendMsgOrderly(String topic, String keys, String msg, String orderTag, String charset,
-			TransferModeEnum transferMode, SendCallback callback) throws MqWapperException, MqBussinessException
+			ProducerTransferMode transferMode, SendCallback callback) throws MqWapperException, MqBussinessException
 	{
 		transferMode.sendMsgOrderly(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, orderTag, charset,
 				callback);

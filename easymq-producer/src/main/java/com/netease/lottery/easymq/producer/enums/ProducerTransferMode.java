@@ -12,7 +12,7 @@ import com.netease.lottery.easymq.common.exception.MqBussinessException;
 import com.netease.lottery.easymq.common.exception.MqWapperException;
 import com.netease.lottery.easymq.producer.assist.StandardMessageQueueSelector;
 
-public enum TransferModeEnum
+public enum ProducerTransferMode
 {
 	SYNC
 	{
@@ -171,7 +171,7 @@ public enum TransferModeEnum
 		}
 	};
 
-	private TransferModeEnum()
+	private ProducerTransferMode()
 	{
 	}
 
