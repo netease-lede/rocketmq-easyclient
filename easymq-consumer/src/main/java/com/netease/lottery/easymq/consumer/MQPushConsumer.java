@@ -6,9 +6,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
-import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import com.alibaba.rocketmq.client.exception.MQClientException;
+import com.alibaba.rocketmq.common.protocol.heartbeat.MessageModel;
+import com.netease.lottery.easymq.common.constant.MQConstant;
 import com.netease.lottery.easymq.consumer.bean.MQConsumerConfigBean;
+import com.netease.lottery.easymq.consumer.enums.ConsumerTransferMode;
 
 public class MQPushConsumer
 {
@@ -37,26 +39,31 @@ public class MQPushConsumer
 		}
 	}
 
-	public void loadConfigBean(MQConsumerConfigBean consumerConfigBean)
+	public void loadConfigBean(MQConsumerConfigBean consumerConfigBean) throws MQClientException
 	{
-		//TODO
 		consumer.setConsumerGroup(consumerConfigBean.getGroupName());
 		consumer.setConsumeThreadMin(consumerConfigBean.getConsumerThreadCountMin());
 		consumer.setConsumeThreadMax(consumerConfigBean.getConsumerThreadCountMax());
-	}
-
-	public void start(String[] topics, MessageListenerConcurrently messageListenerConcurrently) throws Exception
-	{
-		if (topics == null || topics.length <= 0 || messageListenerConcurrently == null)
+		for (String topic : consumerConfigBean.getTopicHandler().keySet())
 		{
-			throw new Exception("");
+			consumer.subscribe(topic, MQConstant.TOPIC_DEFAULT_TAG);
 		}
-		for (String topic : topics)
+		if (consumerConfigBean.isBroadcast())
 		{
-			consumer.subscribe(topic, "*");
+			consumer.setMessageModel(MessageModel.BROADCASTING);
+			ConsumerTransferMode.PUSH_CONCURRENTLY.regestHandlers(consumer, consumerConfigBean.getTopicHandler());
 		}
-		consumer.registerMessageListener(messageListenerConcurrently);
-		consumer.start();
+		else
+		{
+			if (consumerConfigBean.isOrderly())
+			{
+				ConsumerTransferMode.PUSH_ORDERLY.regestHandlers(consumer, consumerConfigBean.getTopicHandler());
+			}
+			else
+			{
+				ConsumerTransferMode.PUSH_CONCURRENTLY.regestHandlers(consumer, consumerConfigBean.getTopicHandler());
+			}
+		}
 	}
 
 	public void start() throws MQClientException

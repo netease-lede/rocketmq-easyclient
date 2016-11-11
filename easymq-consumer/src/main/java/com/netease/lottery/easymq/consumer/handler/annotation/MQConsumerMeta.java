@@ -21,6 +21,6 @@ public @interface MQConsumerMeta
 
 	int consumerThreadCountMin() default 10;
 
-	int consumerThreadCountMax() default 20;
+	int consumerThreadCountMax() default 30;
 
 }
