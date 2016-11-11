@@ -52,6 +52,8 @@ public class MQConsumerGroup
 			{
 				consumer.loadConfigBean(consumerConfigBean);
 				consumer.start();
+				LOG.info("easymq running. a consumer started. use config:" + prop + ",use consumerConfigBean:"
+						+ consumerConfigBean);
 			}
 			catch (Exception e)
 			{

@@ -4,11 +4,13 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
 import com.alibaba.rocketmq.client.exception.MQClientException;
 import com.alibaba.rocketmq.common.protocol.heartbeat.MessageModel;
 import com.netease.lottery.easymq.common.constant.MQConstant;
+import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
 import com.netease.lottery.easymq.consumer.bean.MQConsumerConfigBean;
 import com.netease.lottery.easymq.consumer.enums.ConsumerTransferMode;
 
@@ -25,18 +27,26 @@ public class MQPushConsumer
 
 	private void init(Properties props)
 	{
-		try
+		if (!checkVaild(props))
 		{
-			consumer = new DefaultMQPushConsumer("DefaultConsumerGroup");
-			consumer.setNamesrvAddr(props.getProperty("easymq.consumer.name.server"));
-			consumer.setInstanceName(props.getProperty("easymq.consumer.instance.name"));
-			LOG.info(props.getProperty("rocket.instance.name") + " started success");
+			throw new MqConsumerConfigException("easymq wrong. consumer config properties error.");
 		}
-		catch (Exception e)
+		consumer = new DefaultMQPushConsumer();
+		consumer.setNamesrvAddr(props.getProperty(MQConstant.CONFIG_CONSUMER_NAMESERVER));
+		if (!StringUtils.isEmpty(props.getProperty(MQConstant.CONFIG_CONSUMER_INSTANCENAME)))
 		{
-			LOG.fatal("create RocketMQ producer error!use default setting!", e);
-			return;
+			consumer.setInstanceName(props.getProperty(MQConstant.CONFIG_CONSUMER_INSTANCENAME));
 		}
+	}
+
+	private boolean checkVaild(Properties props)
+	{
+		String nameserver = props.getProperty(MQConstant.CONFIG_CONSUMER_NAMESERVER);
+		if (!nameserver.matches("[0-9.:;]+"))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	public void loadConfigBean(MQConsumerConfigBean consumerConfigBean) throws MQClientException

@@ -19,7 +19,6 @@ import com.netease.lottery.easymq.consumer.scanner.ScanPackage;
 public class MQConsumerManager
 {
 	private static final Log LOG = LogFactory.getLog(MQConsumerManager.class);
-	private static final boolean IS_WINDOWS = System.getProperty("os.name").contains("indow");
 
 	static
 	{
@@ -48,8 +47,7 @@ public class MQConsumerManager
 		//从配置文件读取
 		Properties props = new Properties();
 		String root = MQConsumerManager.class.getClassLoader().getResource(MQConstant.CONFIG_DIR).getPath();
-		root = IS_WINDOWS ? root.substring(1) : root;
-		System.out.println(root);
+		root = MQConstant.IS_WINDOWS ? root.substring(1) : root;
 		if (StringUtils.isEmpty(root))
 		{
 			String warn = "easymq wrong. consumer config dir not exist. config dir should be src/main/resources/"
@@ -58,6 +56,7 @@ public class MQConsumerManager
 			throw new MqConsumerConfigException(warn);
 		}
 		Path configPath = Paths.get(root, MQConstant.DEFAULT_CONSUMER_FILENAME);
+		LOG.info("easymq running. find cousumer properties in " + configPath);
 		if (Files.exists(configPath) && Files.isRegularFile(configPath))
 		{
 			try

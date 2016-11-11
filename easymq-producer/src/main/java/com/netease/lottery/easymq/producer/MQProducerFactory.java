@@ -1,104 +1,124 @@
 package com.netease.lottery.easymq.producer;
 
-import java.io.File;
-import java.util.HashMap;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
 
 import com.netease.lottery.easymq.common.constant.MQConstant;
+import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
+import com.netease.lottery.easymq.common.exception.MqProducerConfigException;
 
 public class MQProducerFactory
 {
 	private static final Log LOG = LogFactory.getLog(MQProducerFactory.class);
-	private static final MQProducerFactory INSTANCE = new MQProducerFactory();
 
-	private static HashMap<String, MQProducer> PRODUCER_MAP;
+	private static MQProducer producer;
 
-	private MQProducerFactory()
+	static
 	{
-		PRODUCER_MAP = new HashMap<String, MQProducer>();
-		loadConfig();
+		init();
 	}
 
-	public static MQProducerFactory getInstance()
+	public MQProducer getProducer() throws Exception
 	{
-		return INSTANCE;
+		return producer;
 	}
 
-	public MQProducer getDefaultProducer() throws Exception
+	private static void init()
 	{
-		return getProducer(MQConstant.DEFAULT_FILENAME);
+		Properties prop = getConfigProp();
+		buildProducer(prop);
 	}
 
-	/**
-	 * 获取RocketMQ Producer实例
-	 * @param mqConfigFileName
-	 * @return
-	 * @throws Exception 
-	 */
-	public MQProducer getProducer(String mqConfigFileName) throws Exception
+	private static Properties getConfigProp()
 	{
-		if (mqConfigFileName == null || mqConfigFileName.length() <= 0)
+		//从配置文件读取
+		Properties props = new Properties();
+		String root = MQProducerFactory.class.getClassLoader().getResource(MQConstant.CONFIG_DIR).getPath();
+		root = MQConstant.IS_WINDOWS ? root.substring(1) : root;
+		if (StringUtils.isEmpty(root))
 		{
-			throw new Exception("");
+			String warn = "easymq wrong. producer config dir not exist. config dir should be src/main/resources/"
+					+ MQConstant.CONFIG_DIR;
+			LOG.fatal(warn);
+			throw new MqProducerConfigException(warn);
 		}
-		MQProducer mqProducer = PRODUCER_MAP.get(mqConfigFileName);
-		if (mqProducer != null)
+		Path configPath = Paths.get(root, MQConstant.DEFAULT_PRODUCER_FILENAME);
+		LOG.info("easymq running. find producer properties in " + configPath);
+		if (Files.exists(configPath) && Files.isRegularFile(configPath))
 		{
-			return mqProducer;
-		}
-		LOG.fatal("#No kafka config file find." + mqConfigFileName);
-		throw new Exception("#No kafka config file find." + mqConfigFileName);
-	}
-
-	private static void loadConfig()
-	{
-		try
-		{
-			String filePath = MQProducerFactory.class.getClassLoader().getResource(MQConstant.CONFIG_DIR).getPath();
-			LOG.info("#Load RocketMQ dir path:" + filePath);
-			File configDir = new File(filePath);
-			if (!configDir.exists())
+			try
 			{
-				String warn = "easymq wrong. product config dir find. filePath:" + filePath;
-				LOG.fatal(warn);
-				throw new Exception(warn);
+				props.load(Files.newInputStream(configPath));
 			}
-			if (configDir.isFile())
+			catch (IOException e)
 			{
-				throw new Exception("#RocketMQ config dir is a file.");
-			}
-			File[] files = configDir.listFiles();
-			if (files != null && files.length > 0)
-			{
-				for (File file : files)
-				{
-					try
-					{
-						buildProducer(file.getName());
-					}
-					catch (Exception e)
-					{
-						LOG.fatal("#Builder producer:" + file.getName() + " error.Cause:", e);
-					}
-				}
-			}
-			else
-			{
-				LOG.fatal("#No RocketMQ config file found.No file load.");
+				String warn = "easymq wrong. producer read config io error. configPath:" + configPath;
+				LOG.fatal(warn, e);
+				throw new MqConsumerConfigException(warn, e);
 			}
 		}
-		catch (Exception e)
+		else
 		{
-			LOG.fatal("#Load RocketMQ file error!Cause:", e);
+			String warn = "easymq wrong. producer config not exist. plz check. configPath should be :" + configPath;
+			LOG.fatal(warn);
+			throw new MqConsumerConfigException(warn);
 		}
+		return props;
 	}
 
-	private static void buildProducer(String mqConfigFileName)
+	private static void buildProducer(Properties prop)
 	{
-		MQProducer mqMsgProducer = new MQProducer(mqConfigFileName);
-		PRODUCER_MAP.put(mqConfigFileName, mqMsgProducer);
-		LOG.info("#Load RocketMQ config:" + mqConfigFileName);
+		producer = new MQProducer(prop);
+		LOG.info("easymq running. producer use:" + prop);
 	}
+
+	//	private static void loadConfig()
+	//	{
+	//		try
+	//		{
+	//			String filePath = MQProducerFactory.class.getClassLoader().getResource(MQConstant.CONFIG_DIR).getPath();
+	//			File configDir = new File(filePath);
+	//			if (!configDir.exists())
+	//			{
+	//				String warn = "easymq wrong. product config dir find. filePath:" + filePath;
+	//				LOG.fatal(warn);
+	//				throw new Exception(warn);
+	//			}
+	//			if (configDir.isFile())
+	//			{
+	//				throw new Exception("#RocketMQ config dir is a file.");
+	//			}
+	//			File[] files = configDir.listFiles();
+	//			if (files != null && files.length > 0)
+	//			{
+	//				for (File file : files)
+	//				{
+	//					try
+	//					{
+	//						buildProducer(file.getName());
+	//					}
+	//					catch (Exception e)
+	//					{
+	//						LOG.fatal("#Builder producer:" + file.getName() + " error.Cause:", e);
+	//					}
+	//				}
+	//			}
+	//			else
+	//			{
+	//				LOG.fatal("#No RocketMQ config file found.No file load.");
+	//			}
+	//		}
+	//		catch (Exception e)
+	//		{
+	//			LOG.fatal("#Load RocketMQ file error!Cause:", e);
+	//		}
+	//
+	//	}
 }

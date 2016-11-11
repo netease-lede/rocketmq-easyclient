@@ -1,16 +1,19 @@
 package com.netease.lottery.easymq.producer;
 
-import java.io.FileInputStream;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
 
+import com.alibaba.rocketmq.client.exception.MQClientException;
 import com.alibaba.rocketmq.client.producer.DefaultMQProducer;
 import com.alibaba.rocketmq.client.producer.SendCallback;
 import com.alibaba.rocketmq.remoting.common.RemotingHelper;
 import com.netease.lottery.easymq.common.constant.MQConstant;
 import com.netease.lottery.easymq.common.exception.MqBussinessException;
+import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
+import com.netease.lottery.easymq.common.exception.MqProducerConfigException;
 import com.netease.lottery.easymq.common.exception.MqWapperException;
 import com.netease.lottery.easymq.producer.enums.ProducerTransferMode;
 
@@ -20,31 +23,47 @@ public class MQProducer
 
 	private DefaultMQProducer producer;
 
-	public MQProducer(String MQConfigFileName)
+	public MQProducer(Properties prop)
 	{
-		init(MQConfigFileName);
+		init(prop);
 	}
 
-	private void init(String MQConfigFileName)
+	private void init(Properties prop)
 	{
+		if (!checkVaild(prop))
+		{
+			throw new MqProducerConfigException("easymq wrong. producer config properties error.");
+		}
 		//从配置文件读取
-		Properties props = new Properties();
+		producer = new DefaultMQProducer(prop.getProperty(MQConstant.CONFIG_PRODUCER_GROUPNAME));
+		producer.setNamesrvAddr(prop.getProperty(MQConstant.CONFIG_PRODUCER_NAMESERVER));
+		producer.setInstanceName(prop.getProperty(MQConstant.CONFIG_PRODUCER_INSTANCENAME));
 		try
 		{
-			String filePath = this.getClass().getClassLoader().getResource(MQConstant.CONFIG_DIR).getPath() + "/"
-					+ MQConfigFileName;
-			props.load(new FileInputStream(filePath));
-			producer = new DefaultMQProducer(props.getProperty("easymq.producer.groupname"));
-			producer.setNamesrvAddr(props.getProperty("easymq.name.server"));
-			producer.setInstanceName(props.getProperty("easymq.instance.name"));
 			producer.start();
-			LOG.info(props.getProperty("rocket.instance.name") + " started success");
+			LOG.info("easymq running. a producer started. use properties:" + prop);
 		}
-		catch (Exception e)
+		catch (MQClientException e)
 		{
-			LOG.fatal("create RocketMQ producer error!use default setting!", e);
-			return;
+			String warn = "easymq wrong. producer init failed. prop:" + prop;
+			LOG.fatal(warn, e);
+			throw new MqConsumerConfigException(warn, e);
 		}
+	}
+
+	private boolean checkVaild(Properties props)
+	{
+		String nameserver = props.getProperty(MQConstant.CONFIG_PRODUCER_NAMESERVER);
+		if (!nameserver.matches("[0-9.:;]+"))
+		{
+			return false;
+		}
+		String groupname = props.getProperty(MQConstant.CONFIG_PRODUCER_GROUPNAME);
+		if (StringUtils.isEmpty(groupname))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	/**

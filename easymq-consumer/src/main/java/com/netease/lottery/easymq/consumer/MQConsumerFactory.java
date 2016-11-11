@@ -13,10 +13,21 @@ public class MQConsumerFactory
 
 	private MQConsumerFactory()
 	{
+		super();
 	}
 
 	public static MQConsumerFactory getFactory()
 	{
+		if (factory == null)
+		{
+			synchronized (MQConsumerFactory.class)
+			{
+				if (factory == null)
+				{
+					factory = new MQConsumerFactory();
+				}
+			}
+		}
 		return factory;
 	}
 
@@ -26,11 +37,11 @@ public class MQConsumerFactory
 		try
 		{
 			mqPushConsumer = new MQPushConsumer(prop);
-			LOG.info("#Load RocketMQ config:" + prop);
+			LOG.info("easymq load config:" + prop);
 		}
 		catch (Exception e)
 		{
-			LOG.fatal("#Builder producer:" + prop + " error.Cause:", e);
+			LOG.fatal("easymq wrong. Builder consumer:" + prop + " error.Cause:", e);
 			throw e;
 		}
 		return mqPushConsumer;

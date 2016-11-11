@@ -2,10 +2,12 @@ package com.netease.lottery.easymq.common.constant;
 
 public class MQConstant
 {
+	public static final boolean IS_WINDOWS = System.getProperty("os.name").contains("indow");
+
 	//rocketMQ配置文件夹
 	public static final String CONFIG_DIR = "easymqconfig";
 	//rocketMQ生产者默认配置文件名称
-	public static final String DEFAULT_FILENAME = "easymq_producer.properties";
+	public static final String DEFAULT_PRODUCER_FILENAME = "easymq_producer.properties";
 	//rocketMQ消费者默认配置文件名称
 	public static final String DEFAULT_CONSUMER_FILENAME = "easymq_consumer.properties";
 	//异常sleep时间
@@ -20,4 +22,10 @@ public class MQConstant
 	//配置文件变量
 	public static final String CONFIG_CONSUMER_SCANPACKAGE = "easymq.consumer.scanpackage";
 	public static final String CONFIG_CONSUMER_SCANPACKAGE_DEFAULT = "com.netease";
+	public static final String CONFIG_CONSUMER_NAMESERVER = "easymq.consumer.nameserver";
+	public static final String CONFIG_CONSUMER_INSTANCENAME = "easymq.consumer.instancename";
+	public static final String CONFIG_PRODUCER_NAMESERVER = "easymq.producer.nameserver";
+	public static final String CONFIG_PRODUCER_INSTANCENAME = "easymq.producer.instancename";
+	public static final String CONFIG_PRODUCER_GROUPNAME = "easymq.producer.groupname";
+
 }
