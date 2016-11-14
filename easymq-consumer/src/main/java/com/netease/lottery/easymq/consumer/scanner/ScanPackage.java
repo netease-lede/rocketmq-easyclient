@@ -29,9 +29,9 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.netease.lottery.easymq.common.constant.MQConstant;
 import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
-import com.netease.lottery.easymq.consumer.bean.MQConsumerConfigBean;
-import com.netease.lottery.easymq.consumer.handler.MQRecMsgHandler;
-import com.netease.lottery.easymq.consumer.handler.annotation.MQConsumerMeta;
+import com.netease.lottery.easymq.consumer.bean.ConsumerConfigBean;
+import com.netease.lottery.easymq.consumer.handler.EasyMQRecMsgHandler;
+import com.netease.lottery.easymq.consumer.handler.annotation.EasyMQConsumerMeta;
 
 public class ScanPackage
 {
@@ -257,10 +257,10 @@ public class ScanPackage
 		return false;
 	}
 
-	public static List<MQConsumerConfigBean> genConsumerConfigList(String packages)
+	public static List<ConsumerConfigBean> genConsumerConfigList(String packages)
 	{
-		Map<String, MQConsumerConfigBean> consumerConfigs = Maps.newHashMap();
-		Set<String> consumerCallbackNames = findAnnotationClass(packages, MQConsumerMeta.class);
+		Map<String, ConsumerConfigBean> consumerConfigs = Maps.newHashMap();
+		Set<String> consumerCallbackNames = findAnnotationClass(packages, EasyMQConsumerMeta.class);
 		ArrayList<String> consumerCallbackNamesList = new ArrayList<>(consumerCallbackNames);
 		Collections.sort(consumerCallbackNamesList);
 		//System.out.println("annotation class:" + consumerCallbackNames);
@@ -277,13 +277,13 @@ public class ScanPackage
 							+ MQConstant.CONSUMER_INTERFACE_CLASSNAME);
 					continue;
 				}
-				MQConsumerMeta meta = cc.getAnnotation(MQConsumerMeta.class);
+				EasyMQConsumerMeta meta = cc.getAnnotation(EasyMQConsumerMeta.class);
 				if (meta == null)
 				{
 					LOG.fatal("easymq wrong. class:" + callbackName + " annotation analysis wrong.");
 					continue;
 				}
-				MQRecMsgHandler handler = (MQRecMsgHandler) cc.newInstance();
+				EasyMQRecMsgHandler handler = (EasyMQRecMsgHandler) cc.newInstance();
 				consumerConfigs = genConsumerConfigList(consumerConfigs, meta, handler);
 			}
 			catch (Exception e)
@@ -301,8 +301,8 @@ public class ScanPackage
 	 * @param handler
 	 * @return
 	 */
-	private static Map<String, MQConsumerConfigBean> genConsumerConfigList(
-			Map<String, MQConsumerConfigBean> consumerConfigs, MQConsumerMeta meta, MQRecMsgHandler handler)
+	private static Map<String, ConsumerConfigBean> genConsumerConfigList(
+			Map<String, ConsumerConfigBean> consumerConfigs, EasyMQConsumerMeta meta, EasyMQRecMsgHandler handler)
 	{
 		if (consumerConfigs == null)
 		{
@@ -318,8 +318,8 @@ public class ScanPackage
 		if (consumerConfigs.containsKey(groupName))
 		{
 			//该组配置存在，更新
-			MQConsumerConfigBean configBean = consumerConfigs.get(groupName);
-			Map<String, List<MQRecMsgHandler>> topicHandler = configBean.getTopicHandler();
+			ConsumerConfigBean configBean = consumerConfigs.get(groupName);
+			Map<String, List<EasyMQRecMsgHandler>> topicHandler = configBean.getTopicHandler();
 			if (topicHandler == null)
 			{
 				String warn = "easymq wrong. topic handler is null. topic:" + topic;
@@ -328,12 +328,12 @@ public class ScanPackage
 			}
 			if (topicHandler.containsKey(topic))
 			{
-				List<MQRecMsgHandler> handlers = topicHandler.get(topic);
+				List<EasyMQRecMsgHandler> handlers = topicHandler.get(topic);
 				handlers.add(handler);
 			}
 			else
 			{
-				List<MQRecMsgHandler> handlers = Lists.newArrayList();
+				List<EasyMQRecMsgHandler> handlers = Lists.newArrayList();
 				handlers.add(handler);
 				topicHandler.put(topic, handlers);
 			}
@@ -349,15 +349,15 @@ public class ScanPackage
 		else
 		{
 			//该组配置不存在，生成
-			MQConsumerConfigBean configBean = new MQConsumerConfigBean();
+			ConsumerConfigBean configBean = new ConsumerConfigBean();
 			configBean.setGroupName(groupName);
 			configBean.setConsumerThreadCountMin(consumerThreadCountMin);
 			configBean.setConsumerThreadCountMax(consumerThreadCountMax);
 			configBean.setGroup(group);
 			configBean.setOrderly(orderly);
 			configBean.setBroadcast(broadcast);
-			Map<String, List<MQRecMsgHandler>> topicHandler = Maps.newHashMap();
-			List<MQRecMsgHandler> handlers = Lists.newArrayList();
+			Map<String, List<EasyMQRecMsgHandler>> topicHandler = Maps.newHashMap();
+			List<EasyMQRecMsgHandler> handlers = Lists.newArrayList();
 			handlers.add(handler);
 			topicHandler.put(topic, handlers);
 			configBean.setTopicHandler(topicHandler);

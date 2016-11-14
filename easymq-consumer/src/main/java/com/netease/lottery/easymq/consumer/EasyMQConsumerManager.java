@@ -13,28 +13,23 @@ import org.springframework.util.StringUtils;
 
 import com.netease.lottery.easymq.common.constant.MQConstant;
 import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
-import com.netease.lottery.easymq.consumer.bean.MQConsumerConfigBean;
+import com.netease.lottery.easymq.consumer.bean.ConsumerConfigBean;
 import com.netease.lottery.easymq.consumer.scanner.ScanPackage;
 
-public class MQConsumerManager
+public class EasyMQConsumerManager
 {
-	private static final Log LOG = LogFactory.getLog(MQConsumerManager.class);
+	private static final Log LOG = LogFactory.getLog(EasyMQConsumerManager.class);
 
-	static
-	{
-		init();
-	}
-
-	private static void init()
+	public static void init()
 	{
 		Properties props = getConfigProp();
 		String packages = props.getProperty(MQConstant.CONFIG_CONSUMER_SCANPACKAGE,
 				MQConstant.CONFIG_CONSUMER_SCANPACKAGE_DEFAULT);
-		List<MQConsumerConfigBean> genConsumerConfigList = ScanPackage.genConsumerConfigList(packages);
+		List<ConsumerConfigBean> genConsumerConfigList = ScanPackage.genConsumerConfigList(packages);
 
-		for (MQConsumerConfigBean consumerConfigBean : genConsumerConfigList)
+		for (ConsumerConfigBean consumerConfigBean : genConsumerConfigList)
 		{
-			MQConsumerGroup consumerGroup = new MQConsumerGroup();
+			EasyMQConsumerGroup consumerGroup = new EasyMQConsumerGroup();
 			consumerGroup.setConsumerConfig(props);
 			consumerGroup.setConsumerNumber(1);
 			consumerGroup.setConsumerConfigBean(consumerConfigBean);
@@ -46,7 +41,7 @@ public class MQConsumerManager
 	{
 		//从配置文件读取
 		Properties props = new Properties();
-		String root = MQConsumerManager.class.getClassLoader().getResource(MQConstant.CONFIG_DIR).getPath();
+		String root = EasyMQConsumerManager.class.getClassLoader().getResource(MQConstant.CONFIG_DIR).getPath();
 		root = MQConstant.IS_WINDOWS ? root.substring(1) : root;
 		if (StringUtils.isEmpty(root))
 		{

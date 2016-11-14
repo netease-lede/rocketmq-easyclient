@@ -11,16 +11,16 @@ import com.alibaba.rocketmq.client.exception.MQClientException;
 import com.alibaba.rocketmq.common.protocol.heartbeat.MessageModel;
 import com.netease.lottery.easymq.common.constant.MQConstant;
 import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
-import com.netease.lottery.easymq.consumer.bean.MQConsumerConfigBean;
+import com.netease.lottery.easymq.consumer.bean.ConsumerConfigBean;
 import com.netease.lottery.easymq.consumer.enums.ConsumerTransferMode;
 
-public class MQPushConsumer
+public class EasyMQPushConsumer
 {
-	private Log LOG = LogFactory.getLog(MQPushConsumer.class);
+	private Log LOG = LogFactory.getLog(EasyMQPushConsumer.class);
 
 	private DefaultMQPushConsumer consumer;
 
-	public MQPushConsumer(Properties props)
+	public EasyMQPushConsumer(Properties props)
 	{
 		init(props);
 	}
@@ -49,7 +49,7 @@ public class MQPushConsumer
 		return true;
 	}
 
-	public void loadConfigBean(MQConsumerConfigBean consumerConfigBean) throws MQClientException
+	public void loadConfigBean(ConsumerConfigBean consumerConfigBean) throws MQClientException
 	{
 		consumer.setConsumerGroup(consumerConfigBean.getGroupName());
 		consumer.setConsumeThreadMin(consumerConfigBean.getConsumerThreadCountMin());

@@ -1,4 +1,4 @@
-package com.netease.lottery.easyq.example;
+package com.netease.lottery.easymq.example;
 
 public class TestInner
 {

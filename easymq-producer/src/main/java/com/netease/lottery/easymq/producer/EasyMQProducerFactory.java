@@ -14,18 +14,18 @@ import com.netease.lottery.easymq.common.constant.MQConstant;
 import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
 import com.netease.lottery.easymq.common.exception.MqProducerConfigException;
 
-public class MQProducerFactory
+public class EasyMQProducerFactory
 {
-	private static final Log LOG = LogFactory.getLog(MQProducerFactory.class);
+	private static final Log LOG = LogFactory.getLog(EasyMQProducerFactory.class);
 
-	private static MQProducer producer;
+	private static EasyMQProducer producer;
 
 	static
 	{
 		init();
 	}
 
-	public MQProducer getProducer() throws Exception
+	public static EasyMQProducer getProducer()
 	{
 		return producer;
 	}
@@ -40,7 +40,7 @@ public class MQProducerFactory
 	{
 		//从配置文件读取
 		Properties props = new Properties();
-		String root = MQProducerFactory.class.getClassLoader().getResource(MQConstant.CONFIG_DIR).getPath();
+		String root = EasyMQProducerFactory.class.getClassLoader().getResource(MQConstant.CONFIG_DIR).getPath();
 		root = MQConstant.IS_WINDOWS ? root.substring(1) : root;
 		if (StringUtils.isEmpty(root))
 		{
@@ -75,8 +75,8 @@ public class MQProducerFactory
 
 	private static void buildProducer(Properties prop)
 	{
-		producer = new MQProducer(prop);
 		LOG.info("easymq running. producer use:" + prop);
+		producer = new EasyMQProducer(prop);
 	}
 
 	//	private static void loadConfig()

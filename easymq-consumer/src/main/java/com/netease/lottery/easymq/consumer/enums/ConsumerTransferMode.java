@@ -15,7 +15,7 @@ import com.alibaba.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
 import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import com.alibaba.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import com.alibaba.rocketmq.common.message.MessageExt;
-import com.netease.lottery.easymq.consumer.handler.MQRecMsgHandler;
+import com.netease.lottery.easymq.consumer.handler.EasyMQRecMsgHandler;
 
 public enum ConsumerTransferMode
 {
@@ -23,7 +23,7 @@ public enum ConsumerTransferMode
 	PUSH_CONCURRENTLY
 	{
 		@Override
-		public void regestHandlers(DefaultMQPushConsumer consumer, Map<String, List<MQRecMsgHandler>> topicHandlers)
+		public void regestHandlers(DefaultMQPushConsumer consumer, Map<String, List<EasyMQRecMsgHandler>> topicHandlers)
 		{
 			final Log log = LogFactory.getLog(ConsumerTransferMode.class);
 			MessageListenerConcurrently listener = new MessageListenerConcurrently() {
@@ -43,7 +43,7 @@ public enum ConsumerTransferMode
 	PUSH_ORDERLY
 	{
 		@Override
-		public void regestHandlers(DefaultMQPushConsumer consumer, Map<String, List<MQRecMsgHandler>> topicHandlers)
+		public void regestHandlers(DefaultMQPushConsumer consumer, Map<String, List<EasyMQRecMsgHandler>> topicHandlers)
 		{
 			final Log log = LogFactory.getLog(ConsumerTransferMode.class);
 			MessageListenerOrderly listener = new MessageListenerOrderly() {
@@ -64,12 +64,12 @@ public enum ConsumerTransferMode
 
 	}
 
-	public void regestHandlers(DefaultMQPushConsumer consumer, Map<String, List<MQRecMsgHandler>> topicHandlers)
+	public void regestHandlers(DefaultMQPushConsumer consumer, Map<String, List<EasyMQRecMsgHandler>> topicHandlers)
 	{
 
 	}
 
-	private static void StandarddealMessage(Map<String, List<MQRecMsgHandler>> topicHandlers, List<MessageExt> msgs,
+	private static void StandarddealMessage(Map<String, List<EasyMQRecMsgHandler>> topicHandlers, List<MessageExt> msgs,
 			final Log log)
 	{
 		//该map的key为topic，value为该topic下的所有message
@@ -77,10 +77,11 @@ public enum ConsumerTransferMode
 		for (Map.Entry<String, List<MessageExt>> entry : topicMessage.entrySet())
 		{
 			String topic = entry.getKey();
-			List<String> messages = entry.getValue().stream().map(msg -> msg.getBody().toString())
-					.collect(Collectors.toList());
-			List<MQRecMsgHandler> handlers = topicHandlers.get(topic);
-			for (MQRecMsgHandler handler : handlers)
+			//			List<String> messages = entry.getValue().stream().map(msg -> msg.getBody().toString())
+			//					.collect(Collectors.toList());
+			List<MessageExt> messages = entry.getValue().stream().map(msg -> msg).collect(Collectors.toList());
+			List<EasyMQRecMsgHandler> handlers = topicHandlers.get(topic);
+			for (EasyMQRecMsgHandler handler : handlers)
 			{
 				try
 				{

@@ -17,13 +17,13 @@ import com.netease.lottery.easymq.common.exception.MqProducerConfigException;
 import com.netease.lottery.easymq.common.exception.MqWapperException;
 import com.netease.lottery.easymq.producer.enums.ProducerTransferMode;
 
-public class MQProducer
+public class EasyMQProducer
 {
-	private static final Log LOG = LogFactory.getLog(MQProducer.class);
+	private static final Log LOG = LogFactory.getLog(EasyMQProducer.class);
 
 	private DefaultMQProducer producer;
 
-	public MQProducer(Properties prop)
+	public EasyMQProducer(Properties prop)
 	{
 		init(prop);
 	}
@@ -37,7 +37,11 @@ public class MQProducer
 		//从配置文件读取
 		producer = new DefaultMQProducer(prop.getProperty(MQConstant.CONFIG_PRODUCER_GROUPNAME));
 		producer.setNamesrvAddr(prop.getProperty(MQConstant.CONFIG_PRODUCER_NAMESERVER));
-		producer.setInstanceName(prop.getProperty(MQConstant.CONFIG_PRODUCER_INSTANCENAME));
+		String instanceName = prop.getProperty(MQConstant.CONFIG_PRODUCER_INSTANCENAME);
+		if (!StringUtils.isEmpty(instanceName))
+		{
+			producer.setInstanceName(instanceName);
+		}
 		try
 		{
 			producer.start();

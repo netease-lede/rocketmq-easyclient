@@ -8,16 +8,16 @@ import org.apache.commons.logging.LogFactory;
 
 import com.google.common.collect.Lists;
 import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
-import com.netease.lottery.easymq.consumer.bean.MQConsumerConfigBean;
+import com.netease.lottery.easymq.consumer.bean.ConsumerConfigBean;
 
-public class MQConsumerGroup
+public class EasyMQConsumerGroup
 {
-	private static final Log LOG = LogFactory.getLog(MQConsumerGroup.class);
+	private static final Log LOG = LogFactory.getLog(EasyMQConsumerGroup.class);
 
 	/**
 	 * 消费者配置
 	 */
-	private MQConsumerConfigBean consumerConfigBean;
+	private ConsumerConfigBean consumerConfigBean;
 
 	/**
 	 * 消费组名称
@@ -34,7 +34,7 @@ public class MQConsumerGroup
 	/**
 	 * 消费者列表
 	 */
-	private List<MQPushConsumer> consumerList = Lists.newArrayList();
+	private List<EasyMQPushConsumer> consumerList = Lists.newArrayList();
 
 	public void initConsumerGroup()
 	{
@@ -47,7 +47,7 @@ public class MQConsumerGroup
 		this.setConsumerGroupName(consumerConfigBean.getGroupName());
 		for (int index = 1; index <= consumerNumber; index++)
 		{
-			MQPushConsumer consumer = MQConsumerFactory.getFactory().getMQConsumer(prop);
+			EasyMQPushConsumer consumer = EasyMQConsumerFactory.getFactory().getMQConsumer(prop);
 			try
 			{
 				consumer.loadConfigBean(consumerConfigBean);
@@ -65,12 +65,12 @@ public class MQConsumerGroup
 		}
 	}
 
-	public MQConsumerConfigBean getConsumerConfigBean()
+	public ConsumerConfigBean getConsumerConfigBean()
 	{
 		return consumerConfigBean;
 	}
 
-	public void setConsumerConfigBean(MQConsumerConfigBean consumerConfigBean)
+	public void setConsumerConfigBean(ConsumerConfigBean consumerConfigBean)
 	{
 		this.consumerConfigBean = consumerConfigBean;
 	}

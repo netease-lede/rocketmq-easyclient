@@ -3,11 +3,11 @@ package com.netease.lottery.easymq.consumer.bean;
 import java.util.List;
 import java.util.Map;
 
-import com.netease.lottery.easymq.consumer.handler.MQRecMsgHandler;
+import com.netease.lottery.easymq.consumer.handler.EasyMQRecMsgHandler;
 
-public class MQConsumerConfigBean
+public class ConsumerConfigBean
 {
-	private Map<String, List<MQRecMsgHandler>> topicHandler;
+	private Map<String, List<EasyMQRecMsgHandler>> topicHandler;
 	private String groupName;
 	private String group;
 	private boolean isOrderly;
@@ -15,12 +15,12 @@ public class MQConsumerConfigBean
 	private int consumerThreadCountMin;
 	private int consumerThreadCountMax;
 
-	public Map<String, List<MQRecMsgHandler>> getTopicHandler()
+	public Map<String, List<EasyMQRecMsgHandler>> getTopicHandler()
 	{
 		return topicHandler;
 	}
 
-	public void setTopicHandler(Map<String, List<MQRecMsgHandler>> topicHandler)
+	public void setTopicHandler(Map<String, List<EasyMQRecMsgHandler>> topicHandler)
 	{
 		this.topicHandler = topicHandler;
 	}

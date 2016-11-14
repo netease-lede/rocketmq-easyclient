@@ -5,38 +5,38 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class MQConsumerFactory
+public class EasyMQConsumerFactory
 {
-	private Log LOG = LogFactory.getLog(MQConsumerFactory.class);
+	private Log LOG = LogFactory.getLog(EasyMQConsumerFactory.class);
 
-	private static MQConsumerFactory factory;
+	private static EasyMQConsumerFactory factory;
 
-	private MQConsumerFactory()
+	private EasyMQConsumerFactory()
 	{
 		super();
 	}
 
-	public static MQConsumerFactory getFactory()
+	public static EasyMQConsumerFactory getFactory()
 	{
 		if (factory == null)
 		{
-			synchronized (MQConsumerFactory.class)
+			synchronized (EasyMQConsumerFactory.class)
 			{
 				if (factory == null)
 				{
-					factory = new MQConsumerFactory();
+					factory = new EasyMQConsumerFactory();
 				}
 			}
 		}
 		return factory;
 	}
 
-	public MQPushConsumer getMQConsumer(Properties prop)
+	public EasyMQPushConsumer getMQConsumer(Properties prop)
 	{
-		MQPushConsumer mqPushConsumer = null;
+		EasyMQPushConsumer mqPushConsumer = null;
 		try
 		{
-			mqPushConsumer = new MQPushConsumer(prop);
+			mqPushConsumer = new EasyMQPushConsumer(prop);
 			LOG.info("easymq load config:" + prop);
 		}
 		catch (Exception e)
