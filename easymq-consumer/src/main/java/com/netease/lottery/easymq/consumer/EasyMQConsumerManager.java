@@ -22,18 +22,25 @@ public class EasyMQConsumerManager
 
 	public static void init()
 	{
-		Properties props = getConfigProp();
-		String packages = props.getProperty(MQConstant.CONFIG_CONSUMER_SCANPACKAGE,
-				MQConstant.CONFIG_CONSUMER_SCANPACKAGE_DEFAULT);
-		List<ConsumerConfigBean> genConsumerConfigList = ScanPackage.genConsumerConfigList(packages);
-
-		for (ConsumerConfigBean consumerConfigBean : genConsumerConfigList)
+		try
 		{
-			EasyMQConsumerGroup consumerGroup = new EasyMQConsumerGroup();
-			consumerGroup.setConsumerConfig(props);
-			consumerGroup.setConsumerNumber(1);
-			consumerGroup.setConsumerConfigBean(consumerConfigBean);
-			consumerGroup.initConsumerGroup();
+			Properties props = getConfigProp();
+			String packages = props.getProperty(MQConstant.CONFIG_CONSUMER_SCANPACKAGE,
+					MQConstant.CONFIG_CONSUMER_SCANPACKAGE_DEFAULT);
+			List<ConsumerConfigBean> genConsumerConfigList = ScanPackage.genConsumerConfigList(packages);
+
+			for (ConsumerConfigBean consumerConfigBean : genConsumerConfigList)
+			{
+				EasyMQConsumerGroup consumerGroup = new EasyMQConsumerGroup();
+				consumerGroup.setConsumerConfig(props);
+				consumerGroup.setConsumerNumber(1);
+				consumerGroup.setConsumerConfigBean(consumerConfigBean);
+				consumerGroup.initConsumerGroup();
+			}
+		}
+		catch (Exception e)
+		{
+			LOG.fatal("easymq wrong. consumer init error.", e);
 		}
 	}
 

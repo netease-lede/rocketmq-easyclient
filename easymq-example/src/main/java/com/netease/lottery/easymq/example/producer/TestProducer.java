@@ -12,7 +12,8 @@ public class TestProducer
 		EasyMQProducer producer = EasyMQProducerFactory.getProducer();
 		try
 		{
-			producer.sendMsg("topic20161114", "order6", "order6detail");
+			producer.sendMsg("topic20161114", "order8", "order8detail");
+			System.out.println();
 
 		}
 		catch (MqWapperException e)

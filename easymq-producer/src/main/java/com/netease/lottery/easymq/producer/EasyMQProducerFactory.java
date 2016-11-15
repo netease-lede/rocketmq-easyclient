@@ -20,13 +20,25 @@ public class EasyMQProducerFactory
 
 	private static EasyMQProducer producer;
 
-	static
-	{
-		init();
-	}
-
 	public static EasyMQProducer getProducer()
 	{
+		try
+		{
+			if (producer == null)
+			{
+				synchronized (EasyMQProducerFactory.class)
+				{
+					if (producer == null)
+					{
+						init();
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			LOG.fatal("easymq wrong. producer init error.", e);
+		}
 		return producer;
 	}
 

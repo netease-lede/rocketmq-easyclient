@@ -15,6 +15,8 @@ import com.alibaba.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
 import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import com.alibaba.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import com.alibaba.rocketmq.common.message.MessageExt;
+import com.google.common.collect.Lists;
+import com.netease.lottery.easymq.consumer.bean.MessageBean;
 import com.netease.lottery.easymq.consumer.handler.EasyMQRecMsgHandler;
 
 public enum ConsumerTransferMode
@@ -79,7 +81,15 @@ public enum ConsumerTransferMode
 			String topic = entry.getKey();
 			//			List<String> messages = entry.getValue().stream().map(msg -> msg.getBody().toString())
 			//					.collect(Collectors.toList());
-			List<MessageExt> messages = entry.getValue().stream().map(msg -> msg).collect(Collectors.toList());
+			List<MessageBean> messages = Lists.newArrayList();
+			for (MessageExt messageExt : entry.getValue())
+			{
+				MessageBean message = new MessageBean();
+				message.setMessageExt(messageExt);
+				message.setKey(messageExt.getKeys());
+				message.setMessage(new String(messageExt.getBody()));
+				messages.add(message);
+			}
 			List<EasyMQRecMsgHandler> handlers = topicHandlers.get(topic);
 			for (EasyMQRecMsgHandler handler : handlers)
 			{

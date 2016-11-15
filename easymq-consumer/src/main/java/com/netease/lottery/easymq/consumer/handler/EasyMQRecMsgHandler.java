@@ -2,9 +2,9 @@ package com.netease.lottery.easymq.consumer.handler;
 
 import java.util.List;
 
-import com.alibaba.rocketmq.common.message.MessageExt;
+import com.netease.lottery.easymq.consumer.bean.MessageBean;
 
 public interface EasyMQRecMsgHandler
 {
-	public void handle(List<MessageExt> msg) throws Exception;
+	public void handle(List<MessageBean> msg) throws Exception;
 }

@@ -2,7 +2,7 @@ package com.netease.lottery.easymq.example.consumer;
 
 import java.util.List;
 
-import com.alibaba.rocketmq.common.message.MessageExt;
+import com.netease.lottery.easymq.consumer.bean.MessageBean;
 import com.netease.lottery.easymq.consumer.handler.EasyMQRecMsgHandler;
 import com.netease.lottery.easymq.consumer.handler.annotation.EasyMQConsumerMeta;
 
@@ -10,14 +10,14 @@ import com.netease.lottery.easymq.consumer.handler.annotation.EasyMQConsumerMeta
 public class PaySuccessMQHandler implements EasyMQRecMsgHandler
 {
 
-	public void handle(List<MessageExt> msg) throws Exception
+	public void handle(List<MessageBean> msg) throws Exception
 	{
 
-		for (MessageExt message : msg)
+		for (MessageBean message : msg)
 		{
 			System.out.println("PaySuccessMQHandler" + message);
-			String body = new String(message.getBody());
-			System.out.println("body:" + body);
+			System.out.println("key:" + message.getKey());
+			System.out.println("message:" + message.getMessage());
 		}
 
 	}
