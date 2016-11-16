@@ -24,8 +24,12 @@ public class MQConstant
 	public static final String CONFIG_CONSUMER_SCANPACKAGE_DEFAULT = "com.netease";
 	public static final String CONFIG_CONSUMER_NAMESERVER = "easymq.consumer.nameserver";
 	public static final String CONFIG_CONSUMER_INSTANCENAME = "easymq.consumer.instancename";
+	public static final String CONFIG_CONSUMER_TIMEOUT = "easymq.consumer.consumertimeoutminutes";
 	public static final String CONFIG_PRODUCER_NAMESERVER = "easymq.producer.nameserver";
 	public static final String CONFIG_PRODUCER_INSTANCENAME = "easymq.producer.instancename";
+	public static final String CONFIG_PRODUCER_TOPICQUEUENUMS = "easymq.producer.topicqueuenums";
+	public static final int CONFIG_PRODUCER_TOPICQUEUENUMS_DEFAULT = 8;
+	public static final String CONFIG_PRODUCER_TIMEOUT = "easymq.producer.sendmsgtimeoutmillis";
 	public static final String CONFIG_PRODUCER_GROUPNAME = "easymq.producer.groupname";
 
 }

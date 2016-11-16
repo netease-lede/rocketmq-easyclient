@@ -37,12 +37,22 @@ public class EasyMQPushConsumer
 		{
 			consumer.setInstanceName(props.getProperty(MQConstant.CONFIG_CONSUMER_INSTANCENAME));
 		}
+		String timeout = props.getProperty(MQConstant.CONFIG_CONSUMER_TIMEOUT);
+		if (!StringUtils.isEmpty(timeout))
+		{
+			consumer.setConsumeTimeout(Long.parseLong(timeout));
+		}
 	}
 
 	private boolean checkVaild(Properties props)
 	{
 		String nameserver = props.getProperty(MQConstant.CONFIG_CONSUMER_NAMESERVER);
 		if (!nameserver.matches("[0-9.:;]+"))
+		{
+			return false;
+		}
+		String timeout = props.getProperty(MQConstant.CONFIG_CONSUMER_TIMEOUT);
+		if (!StringUtils.isEmpty(timeout) && !timeout.matches("[0-9]+"))
 		{
 			return false;
 		}

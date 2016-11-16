@@ -37,6 +37,20 @@ public class EasyMQProducer
 		//从配置文件读取
 		producer = new DefaultMQProducer(prop.getProperty(MQConstant.CONFIG_PRODUCER_GROUPNAME));
 		producer.setNamesrvAddr(prop.getProperty(MQConstant.CONFIG_PRODUCER_NAMESERVER));
+		String topicQueueNums = prop.getProperty(MQConstant.CONFIG_PRODUCER_TOPICQUEUENUMS);
+		if (!StringUtils.isEmpty(topicQueueNums))
+		{
+			producer.setDefaultTopicQueueNums(Integer.parseInt(topicQueueNums));
+		}
+		else
+		{
+			producer.setDefaultTopicQueueNums(MQConstant.CONFIG_PRODUCER_TOPICQUEUENUMS_DEFAULT);
+		}
+		String timeout = prop.getProperty(MQConstant.CONFIG_PRODUCER_TIMEOUT);
+		if (!StringUtils.isEmpty(timeout))
+		{
+			producer.setSendMsgTimeout(Integer.parseInt(timeout));
+		}
 		String instanceName = prop.getProperty(MQConstant.CONFIG_PRODUCER_INSTANCENAME);
 		if (!StringUtils.isEmpty(instanceName))
 		{
@@ -64,6 +78,16 @@ public class EasyMQProducer
 		}
 		String groupname = props.getProperty(MQConstant.CONFIG_PRODUCER_GROUPNAME);
 		if (StringUtils.isEmpty(groupname))
+		{
+			return false;
+		}
+		String topicQueueNums = props.getProperty(MQConstant.CONFIG_PRODUCER_TOPICQUEUENUMS);
+		if (!StringUtils.isEmpty(topicQueueNums) && !topicQueueNums.matches("[0-9]+"))
+		{
+			return false;
+		}
+		String timeout = props.getProperty(MQConstant.CONFIG_PRODUCER_TIMEOUT);
+		if (!StringUtils.isEmpty(timeout) && !timeout.matches("[0-9]+"))
 		{
 			return false;
 		}
