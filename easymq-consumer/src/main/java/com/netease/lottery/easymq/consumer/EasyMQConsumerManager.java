@@ -57,7 +57,7 @@ public class EasyMQConsumerManager
 			LOG.fatal(warn);
 			throw new MqConsumerConfigException(warn);
 		}
-		Path configPath = Paths.get(root, MQConstant.DEFAULT_CONSUMER_FILENAME);
+		Path configPath = Paths.get(root, MQConstant.CONFIG_DIR_CONSUMERS, MQConstant.DEFAULT_CONSUMER_FILENAME);
 		LOG.info("easymq running. find cousumer properties in " + configPath);
 		if (Files.exists(configPath) && Files.isRegularFile(configPath))
 		{

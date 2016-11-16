@@ -6,6 +6,8 @@ public class MQConstant
 
 	//rocketMQ配置文件夹
 	public static final String CONFIG_DIR = "easymqconfig";
+	public static final String CONFIG_DIR_PRODUCERS = "producers";
+	public static final String CONFIG_DIR_CONSUMERS = "consumers";
 	//rocketMQ生产者默认配置文件名称
 	public static final String DEFAULT_PRODUCER_FILENAME = "easymq_producer.properties";
 	//rocketMQ消费者默认配置文件名称

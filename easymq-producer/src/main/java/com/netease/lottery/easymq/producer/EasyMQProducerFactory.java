@@ -61,7 +61,7 @@ public class EasyMQProducerFactory
 			LOG.fatal(warn);
 			throw new MqProducerConfigException(warn);
 		}
-		Path configPath = Paths.get(root, MQConstant.DEFAULT_PRODUCER_FILENAME);
+		Path configPath = Paths.get(root, MQConstant.CONFIG_DIR_PRODUCERS, MQConstant.DEFAULT_PRODUCER_FILENAME);
 		LOG.info("easymq running. find producer properties in " + configPath);
 		if (Files.exists(configPath) && Files.isRegularFile(configPath))
 		{
