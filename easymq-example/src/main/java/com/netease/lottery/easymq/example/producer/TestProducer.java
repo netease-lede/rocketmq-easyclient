@@ -13,8 +13,13 @@ public class TestProducer
 		try
 		{
 			//producer.sendMsg("topic20161116", "order10", "order10detail");
-			producer.sendMsgOrderly("topic20161116", "order8", "order10detail", "onlyyou");
-			System.out.println("send");
+			System.out.println("begin");
+			long begin = System.currentTimeMillis();
+			for (int i = 10; i <= 14; i++)
+			{
+				producer.sendMsgOrderly("topic20161119", i + "", i + "detail", "onlyyou");
+			}
+			System.out.println("send,taking" + (System.currentTimeMillis() - begin) + "ms");
 		}
 		catch (MqWapperException e)
 		{

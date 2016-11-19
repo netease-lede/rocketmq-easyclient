@@ -33,8 +33,15 @@ public enum ConsumerTransferMode
 				public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs,
 						ConsumeConcurrentlyContext context)
 				{
-					StandarddealMessage(topicHandlers, msgs, log);
-					return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+					boolean ok = StandarddealMessage(topicHandlers, msgs, log);
+					if (ok)
+					{
+						return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+					}
+					else
+					{
+						return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+					}
 				}
 
 			};
@@ -53,8 +60,16 @@ public enum ConsumerTransferMode
 				@Override
 				public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs, ConsumeOrderlyContext context)
 				{
-					StandarddealMessage(topicHandlers, msgs, log);
-					return ConsumeOrderlyStatus.SUCCESS;
+					boolean ok = StandarddealMessage(topicHandlers, msgs, log);
+					if (ok)
+					{
+						return ConsumeOrderlyStatus.SUCCESS;
+					}
+					else
+					{
+						return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
+					}
+
 				}
 			};
 			consumer.setMessageListener(listener);
@@ -71,9 +86,10 @@ public enum ConsumerTransferMode
 
 	}
 
-	private static void StandarddealMessage(Map<String, List<EasyMQRecMsgHandler>> topicHandlers, List<MessageExt> msgs,
-			final Log log)
+	private static boolean StandarddealMessage(Map<String, List<EasyMQRecMsgHandler>> topicHandlers,
+			List<MessageExt> msgs, final Log log)
 	{
+		boolean ok = true;
 		//该map的key为topic，value为该topic下的所有message
 		Map<String, List<MessageExt>> topicMessage = msgs.stream().collect(Collectors.groupingBy(MessageExt::getTopic));
 		for (Map.Entry<String, List<MessageExt>> entry : topicMessage.entrySet())
@@ -99,9 +115,12 @@ public enum ConsumerTransferMode
 				}
 				catch (Exception e)
 				{
-					log.fatal("easymq wrong. topic:" + topic + ",handler:" + handler.getClass().getName(), e);
+					log.fatal("easymq wrong. topic:" + topic + ",handler:" + handler.getClass().getName()
+							+ "messageSize:" + messages.size() + ",messages:" + messages, e);
+					ok = false;
 				}
 			}
 		}
+		return ok;
 	}
 }
