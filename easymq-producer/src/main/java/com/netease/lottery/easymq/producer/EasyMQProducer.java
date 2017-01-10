@@ -129,15 +129,15 @@ public class EasyMQProducer
 	 * @param keys
 	 * @param msg
 	 * @param charset
-	 * @param transferMode
-	 * @param callback
+	 * @param produerTransferMode
+	 * @param sendCallback
 	 * @throws MqWapperException
 	 * @throws MqBussinessException
 	 */
-	public void sendMsg(String topic, String keys, String msg, String charset, ProducerTransferMode transferMode,
-			SendCallback callback) throws MqWapperException, MqBussinessException
+	public void sendMsg(String topic, String keys, String msg, String charset, ProducerTransferMode produerTransferMode,
+			SendCallback sendCallback) throws MqWapperException, MqBussinessException
 	{
-		transferMode.sendMsg(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, charset, callback);
+		produerTransferMode.sendMsg(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, charset, sendCallback);
 	}
 
 	/**
