@@ -1,7 +1,12 @@
 package com.netease.lottery.easymq.consumer.bean;
 
-import com.alibaba.rocketmq.common.message.MessageExt;
+import org.apache.rocketmq.common.message.MessageExt;
 
+/**
+ * 
+ * @Desc 
+ * @Author ykhu
+ */
 public class MessageBean
 {
 	private MessageExt messageExt;

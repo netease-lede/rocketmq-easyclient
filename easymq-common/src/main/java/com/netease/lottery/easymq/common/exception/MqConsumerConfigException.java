@@ -1,5 +1,10 @@
 package com.netease.lottery.easymq.common.exception;
 
+/**
+ * 
+ * @Desc 
+ * @Author ykhu
+ */
 @SuppressWarnings("serial")
 public class MqConsumerConfigException extends RuntimeException
 {

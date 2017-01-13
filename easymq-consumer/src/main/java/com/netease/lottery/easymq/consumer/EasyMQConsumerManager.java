@@ -16,6 +16,12 @@ import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
 import com.netease.lottery.easymq.consumer.bean.ConsumerConfigBean;
 import com.netease.lottery.easymq.consumer.scanner.ScanPackage;
 
+/**
+ * 
+ * @Desc 
+ * @Author bjguosong
+ * @Author ykhu
+ */
 public class EasyMQConsumerManager
 {
 	private static final Log LOG = LogFactory.getLog(EasyMQConsumerManager.class);

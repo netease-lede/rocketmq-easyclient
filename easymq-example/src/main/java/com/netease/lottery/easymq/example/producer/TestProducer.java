@@ -6,6 +6,11 @@ import com.netease.lottery.easymq.producer.EasyMQProducer;
 import com.netease.lottery.easymq.producer.EasyMQProducerFactory;
 import com.netease.lottery.easymq.producer.enums.ProducerTransferMode;
 
+/**
+ * 
+ * @Desc 
+ * @Author ykhu
+ */
 public class TestProducer
 {
 	public static void main(String[] args)

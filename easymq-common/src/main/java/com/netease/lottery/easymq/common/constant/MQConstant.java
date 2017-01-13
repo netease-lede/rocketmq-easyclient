@@ -1,5 +1,10 @@
 package com.netease.lottery.easymq.common.constant;
 
+/**
+ * 
+ * @Desc 
+ * @Author ykhu
+ */
 public class MQConstant
 {
 	public static final boolean IS_WINDOWS = System.getProperty("os.name").contains("indow");

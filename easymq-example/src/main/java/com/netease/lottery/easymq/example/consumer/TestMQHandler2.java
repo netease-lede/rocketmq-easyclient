@@ -6,6 +6,11 @@ import com.netease.lottery.easymq.consumer.bean.MessageBean;
 import com.netease.lottery.easymq.consumer.handler.EasyMQRecMsgHandler;
 import com.netease.lottery.easymq.consumer.handler.annotation.EasyMQConsumerMeta;
 
+/**
+ * 
+ * @Desc 
+ * @Author ykhu
+ */
 @EasyMQConsumerMeta(topic = "topic20161116", group = "group2")
 public class TestMQHandler2 implements EasyMQRecMsgHandler
 {

@@ -33,6 +33,11 @@ import com.netease.lottery.easymq.consumer.bean.ConsumerConfigBean;
 import com.netease.lottery.easymq.consumer.handler.EasyMQRecMsgHandler;
 import com.netease.lottery.easymq.consumer.handler.annotation.EasyMQConsumerMeta;
 
+/**
+ * 
+ * @Desc 
+ * @Author bjguosong
+ */
 public class ScanPackage
 {
 	private final static Log LOG = LogFactory.getLog(ScanPackage.class);
