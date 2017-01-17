@@ -4,16 +4,22 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
-import com.alibaba.rocketmq.client.exception.MQClientException;
-import com.alibaba.rocketmq.common.protocol.heartbeat.MessageModel;
 import com.netease.lottery.easymq.common.constant.MQConstant;
 import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
 import com.netease.lottery.easymq.consumer.bean.ConsumerConfigBean;
 import com.netease.lottery.easymq.consumer.enums.ConsumerTransferMode;
 
+/**
+ * 
+ * @Desc 
+ * @Author bjguosong
+ * @Author ykhu
+ */
 public class EasyMQPushConsumer
 {
 	private Log LOG = LogFactory.getLog(EasyMQPushConsumer.class);

@@ -2,6 +2,11 @@ package com.netease.lottery.easymq.example;
 
 import com.netease.lottery.easymq.consumer.EasyMQConsumerManager;
 
+/**
+ * 
+ * @Desc 
+ * @Author ykhu
+ */
 public class TestScan
 {
 	public static void main(String[] args)

@@ -2,10 +2,15 @@ package com.netease.lottery.easymq.producer.assist;
 
 import java.util.List;
 
-import com.alibaba.rocketmq.client.producer.MessageQueueSelector;
-import com.alibaba.rocketmq.common.message.Message;
-import com.alibaba.rocketmq.common.message.MessageQueue;
+import org.apache.rocketmq.client.producer.MessageQueueSelector;
+import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.common.message.MessageQueue;
 
+/**
+ * 
+ * @Desc 
+ * @Author ykhu
+ */
 public class StandardMessageQueueSelector implements MessageQueueSelector
 {
 

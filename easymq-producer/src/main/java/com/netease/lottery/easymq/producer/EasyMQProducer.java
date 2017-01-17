@@ -4,12 +4,12 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.SendCallback;
+import org.apache.rocketmq.remoting.common.RemotingHelper;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.rocketmq.client.exception.MQClientException;
-import com.alibaba.rocketmq.client.producer.DefaultMQProducer;
-import com.alibaba.rocketmq.client.producer.SendCallback;
-import com.alibaba.rocketmq.remoting.common.RemotingHelper;
 import com.netease.lottery.easymq.common.constant.MQConstant;
 import com.netease.lottery.easymq.common.exception.MqBussinessException;
 import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
@@ -17,6 +17,12 @@ import com.netease.lottery.easymq.common.exception.MqProducerConfigException;
 import com.netease.lottery.easymq.common.exception.MqWapperException;
 import com.netease.lottery.easymq.producer.enums.ProducerTransferMode;
 
+/**
+ * 
+ * @Desc 
+ * @Author bjguosong
+ * @Author ykhu
+ */
 public class EasyMQProducer
 {
 	private static final Log LOG = LogFactory.getLog(EasyMQProducer.class);
@@ -129,15 +135,15 @@ public class EasyMQProducer
 	 * @param keys
 	 * @param msg
 	 * @param charset
-	 * @param transferMode
-	 * @param callback
+	 * @param produerTransferMode
+	 * @param sendCallback
 	 * @throws MqWapperException
 	 * @throws MqBussinessException
 	 */
-	public void sendMsg(String topic, String keys, String msg, String charset, ProducerTransferMode transferMode,
-			SendCallback callback) throws MqWapperException, MqBussinessException
+	public void sendMsg(String topic, String keys, String msg, String charset, ProducerTransferMode produerTransferMode,
+			SendCallback sendCallback) throws MqWapperException, MqBussinessException
 	{
-		transferMode.sendMsg(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, charset, callback);
+		produerTransferMode.sendMsg(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, charset, sendCallback);
 	}
 
 	/**

@@ -10,6 +10,12 @@ import com.google.common.collect.Lists;
 import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
 import com.netease.lottery.easymq.consumer.bean.ConsumerConfigBean;
 
+/**
+ * 
+ * @Desc 
+ * @Author bjguosong
+ * @Author ykhu
+ */
 public class EasyMQConsumerGroup
 {
 	private static final Log LOG = LogFactory.getLog(EasyMQConsumerGroup.class);

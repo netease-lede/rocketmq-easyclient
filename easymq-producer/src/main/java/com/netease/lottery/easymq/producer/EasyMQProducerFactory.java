@@ -14,6 +14,12 @@ import com.netease.lottery.easymq.common.constant.MQConstant;
 import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
 import com.netease.lottery.easymq.common.exception.MqProducerConfigException;
 
+/**
+ * 
+ * @Desc 
+ * @Author bjguosong
+ * @Author ykhu
+ */
 public class EasyMQProducerFactory
 {
 	private static final Log LOG = LogFactory.getLog(EasyMQProducerFactory.class);

@@ -5,6 +5,11 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * 
+ * @Desc 
+ * @Author bjguosong
+ */
 public class EasyMQConsumerFactory
 {
 	private Log LOG = LogFactory.getLog(EasyMQConsumerFactory.class);

@@ -5,6 +5,11 @@ import java.util.Map;
 
 import com.netease.lottery.easymq.consumer.handler.EasyMQRecMsgHandler;
 
+/**
+ * 
+ * @Desc 
+ * @Author ykhu
+ */
 public class ConsumerConfigBean
 {
 	private Map<String, List<EasyMQRecMsgHandler>> topicHandler;
