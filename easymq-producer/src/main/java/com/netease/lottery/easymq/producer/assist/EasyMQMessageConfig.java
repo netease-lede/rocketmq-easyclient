@@ -13,18 +13,44 @@ import com.netease.lottery.easymq.producer.enums.ProducerTransferMode;
  */
 public class EasyMQMessageConfig
 {
+	/*
+	 * 发送模式 同步、异步、oneway
+	 */
 	private ProducerTransferMode transferMode;
+	/**
+	 * topic 主题
+	 */
 	private String topic;
-	//该参数暂不使用，统一为default
+	/**
+	 * tags 主题下的标签，暂统一为default
+	 */
 	private String tags;
+	/**
+	 * keys 消息对应的key，建议每个消息有唯一的key
+	 */
 	private String keys;
+	/**
+	 * message 消息具体的文本形式
+	 */
 	private String message;
+	/**
+	 * charSet 编码
+	 */
 	private String charSet;
+	/**
+	 * callback 异步调用时，使用的回调函数
+	 */
 	private SendCallback callback;
+	/**
+	 * orderTag 顺序消息需要的参数，该参数相同值下的消息保证有序
+	 */
 	private String orderTag;
 
 	public EasyMQMessageConfig(String topic, String keys, String message)
 	{
+		this.topic = topic;
+		this.keys = keys;
+		this.message = message;
 		this.transferMode = ProducerTransferMode.SYNC;
 		this.tags = MQConstant.TOPIC_DEFAULT_TAG;
 		this.charSet = RemotingHelper.DEFAULT_CHARSET;

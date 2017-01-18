@@ -1,5 +1,8 @@
 package com.netease.lottery.easymq.example.producer;
 
+import org.apache.rocketmq.client.producer.SendCallback;
+import org.apache.rocketmq.client.producer.SendResult;
+
 import com.netease.lottery.easymq.common.exception.MqBussinessException;
 import com.netease.lottery.easymq.common.exception.MqWapperException;
 import com.netease.lottery.easymq.producer.EasyMQProducer;
@@ -18,28 +21,38 @@ public class TestProducer
 		long begin = System.currentTimeMillis();
 		try
 		{
-			//producer.sendMsg("topic20161116", "order10", "order10detail");
 			System.out.println("begin");
 			System.out.println(begin);
-			producer.sendMsg("topic20170118", "id1", "onlyyou");
-			//			producer.sendMsg("topic20161119", "id1", "onlyyou", "utf-8", ProducerTransferMode.ASYNC,
-			//					new SendCallback() {
-			//						@Override
-			//						public void onSuccess(SendResult sendResult)
-			//						{
-			//							System.out.println("success");
-			//						}
+			producer.sendMsg("topic20170118", "id3", "UU", new SendCallback() {
+				@Override
+				public void onSuccess(SendResult sendResult)
+				{
+					System.out.println("success");
+				}
+
+				@Override
+				public void onException(Throwable e)
+				{
+					System.out.println("failed");
+				}
+			});
+			//			producer.sendMsg("topic20170118", "id1", "onlyyou");
+			//			EasyMQMessageConfig config = new EasyMQMessageConfig("topic20170118", "id2", "onlyU");
+			//			config.setTransferMode(ProducerTransferMode.ASYNC);
+			//			config.setCallback(new SendCallback() {
+			//				@Override
+			//				public void onSuccess(SendResult sendResult)
+			//				{
+			//					System.out.println("success");
+			//				}
 			//
-			//						@Override
-			//						public void onException(Throwable e)
-			//						{
-			//							System.out.println("failed");
-			//						}
-			//					});
-			//			for (int i = 10; i <= 14; i++)
-			//			{
-			//				producer.sendMsgOrderly("topic20161119", i + "", i + "detail", "onlyyou");
-			//			}
+			//				@Override
+			//				public void onException(Throwable e)
+			//				{
+			//					System.out.println("failed");
+			//				}
+			//			});
+			//			producer.sendMsg(config);
 		}
 		catch (MqWapperException e)
 		{
@@ -55,11 +68,12 @@ public class TestProducer
 		}
 
 		/** 
-		 * Ó¦ÓÃÍË³öÊ±£¬Òªµ÷ÓÃshutdownÀ´ÇåÀí×ÊÔ´£¬¹Ø±ÕÍøÂçÁ¬½Ó£¬´ÓMetaQ·þÎñÆ÷ÉÏ×¢Ïú×Ô¼º 
-		 * ×¢Òâ£ºÎÒÃÇ½¨ÒéÓ¦ÓÃÔÚJBOSS¡¢TomcatµÈÈÝÆ÷µÄÍË³ö¹³×ÓÀïµ÷ÓÃshutdown·½·¨ 
+		 * Ó¦ï¿½ï¿½ï¿½Ë³ï¿½Ê±ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½shutdownï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½MetaQï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½ï¿½Ô¼ï¿½ 
+		 * ×¢ï¿½â£ºï¿½ï¿½ï¿½Ç½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½JBOSSï¿½ï¿½Tomcatï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½shutdownï¿½ï¿½ï¿½ï¿½ 
 		 */
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			public void run() {
+			public void run()
+			{
 				producer.shutdown();
 			}
 		}));

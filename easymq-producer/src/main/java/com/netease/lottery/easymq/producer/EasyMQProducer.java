@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.SendCallback;
 import org.springframework.util.StringUtils;
 
 import com.netease.lottery.easymq.common.constant.MQConstant;
@@ -133,7 +134,7 @@ public class EasyMQProducer
 	}
 
 	/**
-	 * 发送方式同步，编码UTF-8。一般使用该方法即可
+	 * 发送方式同步，编码UTF-8。
 	 * @param topic
 	 * @param keys
 	 * @param msg
@@ -143,10 +144,33 @@ public class EasyMQProducer
 	public void sendMsg(String topic, String keys, String msg) throws MqWapperException, MqBussinessException
 	{
 		EasyMQMessageConfig config = new EasyMQMessageConfig(topic, keys, msg);
-		ProducerTransferMode transferMode = config.getTransferMode();
-		transferMode.sendMsg(producer, config);
+		config.getTransferMode().sendMsg(producer, config);
 	}
 
+	/**
+	 * 发送方式异步，编码为UTF-8。
+	 * @param topic
+	 * @param keys
+	 * @param msg
+	 * @param callback
+	 * @throws MqWapperException
+	 * @throws MqBussinessException
+	 */
+	public void sendMsg(String topic, String keys, String msg, SendCallback callback)
+			throws MqWapperException, MqBussinessException
+	{
+		EasyMQMessageConfig config = new EasyMQMessageConfig(topic, keys, msg);
+		config.setTransferMode(ProducerTransferMode.ASYNC);
+		config.setCallback(callback);
+		config.getTransferMode().sendMsg(producer, config);
+	}
+
+	/**
+	 * 定制化发送
+	 * @param config 
+	 * @throws MqWapperException
+	 * @throws MqBussinessException
+	 */
 	public void sendMsg(EasyMQMessageConfig config) throws MqWapperException, MqBussinessException
 	{
 		checkConfig(config);
