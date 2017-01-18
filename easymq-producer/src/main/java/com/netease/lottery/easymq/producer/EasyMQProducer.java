@@ -1,13 +1,12 @@
 package com.netease.lottery.easymq.producer;
 
+import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
-import org.apache.rocketmq.client.producer.SendCallback;
-import org.apache.rocketmq.remoting.common.RemotingHelper;
 import org.springframework.util.StringUtils;
 
 import com.netease.lottery.easymq.common.constant.MQConstant;
@@ -15,6 +14,7 @@ import com.netease.lottery.easymq.common.exception.MqBussinessException;
 import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
 import com.netease.lottery.easymq.common.exception.MqProducerConfigException;
 import com.netease.lottery.easymq.common.exception.MqWapperException;
+import com.netease.lottery.easymq.producer.assist.EasyMQMessageConfig;
 import com.netease.lottery.easymq.producer.enums.ProducerTransferMode;
 
 /**
@@ -100,6 +100,38 @@ public class EasyMQProducer
 		return true;
 	}
 
+	private void checkConfig(EasyMQMessageConfig config) throws MqBussinessException
+	{
+		if (Objects.isNull(config))
+		{
+			throw new MqBussinessException("EasyMQMessageConfig config can not be null.");
+		}
+		if (Objects.isNull(config.getTransferMode()))
+		{
+			throw new MqBussinessException("EasyMQMessageConfig transferMode can not be null.");
+		}
+		if (StringUtils.isEmpty(config.getTopic()))
+		{
+			throw new MqBussinessException("EasyMQMessageConfig topic can not be empty.");
+		}
+		if (StringUtils.isEmpty(config.getKeys()))
+		{
+			throw new MqBussinessException("EasyMQMessageConfig keys can not be empty.");
+		}
+		if (StringUtils.isEmpty(config.getMessage()))
+		{
+			throw new MqBussinessException("EasyMQMessageConfig message can not be empty.");
+		}
+		if (StringUtils.isEmpty(config.getCharSet()))
+		{
+			throw new MqBussinessException("EasyMQMessageConfig charset can not be empty.");
+		}
+		if (StringUtils.isEmpty(config.getTags()))
+		{
+			throw new MqBussinessException("EasyMQMessageConfig tags can not be empty.");
+		}
+	}
+
 	/**
 	 * 发送方式同步，编码UTF-8。一般使用该方法即可
 	 * @param topic
@@ -110,92 +142,16 @@ public class EasyMQProducer
 	 */
 	public void sendMsg(String topic, String keys, String msg) throws MqWapperException, MqBussinessException
 	{
-		ProducerTransferMode.SYNC.sendMsg(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg,
-				RemotingHelper.DEFAULT_CHARSET, null);
+		EasyMQMessageConfig config = new EasyMQMessageConfig(topic, keys, msg);
+		ProducerTransferMode transferMode = config.getTransferMode();
+		transferMode.sendMsg(producer, config);
 	}
 
-	/**
-	 * 发送方式同步，支持自定义编码
-	 * @param topic
-	 * @param keys
-	 * @param msg
-	 * @param charset
-	 * @throws MqWapperException
-	 * @throws MqBussinessException
-	 */
-	public void sendMsg(String topic, String keys, String msg, String charset)
-			throws MqWapperException, MqBussinessException
+	public void sendMsg(EasyMQMessageConfig config) throws MqWapperException, MqBussinessException
 	{
-		ProducerTransferMode.SYNC.sendMsg(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, charset, null);
-	}
-
-	/**
-	 * 发送方式可选，transferMode参数支持同步、异步和不确认
-	 * @param topic
-	 * @param keys
-	 * @param msg
-	 * @param charset
-	 * @param produerTransferMode
-	 * @param sendCallback
-	 * @throws MqWapperException
-	 * @throws MqBussinessException
-	 */
-	public void sendMsg(String topic, String keys, String msg, String charset, ProducerTransferMode produerTransferMode,
-			SendCallback sendCallback) throws MqWapperException, MqBussinessException
-	{
-		produerTransferMode.sendMsg(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, charset, sendCallback);
-	}
-
-	/**
-	 * 发送方式同步，编码UTF-8，相同orderTag消息有序
-	 * @param topic
-	 * @param keys
-	 * @param msg
-	 * @param orderTag
-	 * @throws MqBussinessException
-	 * @throws MqWapperException
-	 */
-	public void sendMsgOrderly(String topic, String keys, String msg, String orderTag)
-			throws MqBussinessException, MqWapperException
-	{
-		ProducerTransferMode.SYNC.sendMsgOrderly(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, orderTag,
-				RemotingHelper.DEFAULT_CHARSET, null);
-	}
-
-	/**
-	 * 发送方式同步，自定义编码，相同orderTag消息有序
-	 * @param topic
-	 * @param keys
-	 * @param msg
-	 * @param orderTag
-	 * @param charset
-	 * @throws MqBussinessException
-	 * @throws MqWapperException
-	 */
-	public void sendMsgOrderly(String topic, String keys, String msg, String orderTag, String charset)
-			throws MqBussinessException, MqWapperException
-	{
-		ProducerTransferMode.SYNC.sendMsgOrderly(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, orderTag,
-				charset, null);
-	}
-
-	/**
-	 * 发送方式可选，相同orderTag消息有序，transferMode参数支持同步、异步和不确认
-	 * @param topic
-	 * @param keys
-	 * @param msg
-	 * @param orderTag
-	 * @param charset
-	 * @param transferMode
-	 * @param callback
-	 * @throws MqWapperException
-	 * @throws MqBussinessException
-	 */
-	public void sendMsgOrderly(String topic, String keys, String msg, String orderTag, String charset,
-			ProducerTransferMode transferMode, SendCallback callback) throws MqWapperException, MqBussinessException
-	{
-		transferMode.sendMsgOrderly(producer, topic, MQConstant.TOPIC_DEFAULT_TAG, keys, msg, orderTag, charset,
-				callback);
+		checkConfig(config);
+		ProducerTransferMode transferMode = config.getTransferMode();
+		transferMode.sendMsg(producer, config);
 	}
 
 	public void shutdown()

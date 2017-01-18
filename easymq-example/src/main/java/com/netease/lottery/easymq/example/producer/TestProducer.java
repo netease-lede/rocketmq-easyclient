@@ -4,7 +4,6 @@ import com.netease.lottery.easymq.common.exception.MqBussinessException;
 import com.netease.lottery.easymq.common.exception.MqWapperException;
 import com.netease.lottery.easymq.producer.EasyMQProducer;
 import com.netease.lottery.easymq.producer.EasyMQProducerFactory;
-import com.netease.lottery.easymq.producer.enums.ProducerTransferMode;
 
 /**
  * 
@@ -22,8 +21,7 @@ public class TestProducer
 			//producer.sendMsg("topic20161116", "order10", "order10detail");
 			System.out.println("begin");
 			System.out.println(begin);
-			producer.sendMsg("topic20161119", "id1", "onlyyou", "utf-8", ProducerTransferMode.ONEWAY, null);
-			//producer.sendMsg("topic20161119", "id1", "onlyyou");
+			producer.sendMsg("topic20170118", "id1", "onlyyou");
 			//			producer.sendMsg("topic20161119", "id1", "onlyyou", "utf-8", ProducerTransferMode.ASYNC,
 			//					new SendCallback() {
 			//						@Override

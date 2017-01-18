@@ -3,14 +3,14 @@ package com.netease.lottery.easymq.producer.enums;
 import java.util.Objects;
 
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
-import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
 import org.apache.rocketmq.common.message.Message;
+import org.springframework.util.StringUtils;
 
-import com.netease.lottery.easymq.common.constant.MQConstant;
 import com.netease.lottery.easymq.common.exception.MqBussinessException;
 import com.netease.lottery.easymq.common.exception.MqWapperException;
+import com.netease.lottery.easymq.producer.assist.EasyMQMessageConfig;
 import com.netease.lottery.easymq.producer.assist.StandardMessageQueueSelector;
 
 /**
@@ -23,57 +23,40 @@ public enum ProducerTransferMode
 	SYNC
 	{
 		@Override
-		public void sendMsg(DefaultMQProducer producer, String topic, String tags, String keys, String msg,
-				String charset, SendCallback callback) throws MqWapperException, MqBussinessException
+		protected void sendMsg(DefaultMQProducer producer, Message message, EasyMQMessageConfig config)
+				throws MqWapperException, MqBussinessException
 		{
 			try
 			{
-				Message message = new Message(topic, tags, keys, msg.getBytes(charset));
 				SendResult sendResult = producer.send(message);
 				SendStatus sendStatus = sendResult.getSendStatus();
 				if (!Objects.equals(sendStatus, SendStatus.SEND_OK))
 				{
-					throw new MqBussinessException(sendStatus.name());
+					throw new MqBussinessException("send message return not ok. sendStatus:" + sendStatus.name());
 				}
 			}
 			catch (Exception e)
 			{
-				try
-				{
-					Thread.sleep(MQConstant.EXCEPTION_SLEEP_TIME);
-				}
-				catch (InterruptedException e1)
-				{
-					e1.printStackTrace();
-				}
 				throw new MqWapperException(e);
 			}
 		}
 
 		@Override
-		public void sendMsgOrderly(DefaultMQProducer producer, String topic, String tags, String keys, String msg,
-				String orderTag, String charset, SendCallback callback) throws MqBussinessException, MqWapperException
+		protected void sendMsgOrderly(DefaultMQProducer producer, Message message, EasyMQMessageConfig config)
+				throws MqBussinessException, MqWapperException
 		{
 			try
 			{
-				Message message = new Message(topic, tags, keys, msg.getBytes(charset));
-				SendResult sendResult = producer.send(message, new StandardMessageQueueSelector(), orderTag);
+				SendResult sendResult = producer.send(message, new StandardMessageQueueSelector(),
+						config.getOrderTag());
 				SendStatus sendStatus = sendResult.getSendStatus();
 				if (!Objects.equals(sendStatus, SendStatus.SEND_OK))
 				{
-					throw new MqBussinessException(sendStatus.name());
+					throw new MqBussinessException("send message return not ok. sendStatus:" + sendStatus.name());
 				}
 			}
 			catch (Exception e)
 			{
-				try
-				{
-					Thread.sleep(MQConstant.EXCEPTION_SLEEP_TIME);
-				}
-				catch (InterruptedException e1)
-				{
-					e1.printStackTrace();
-				}
 				throw new MqWapperException(e);
 			}
 		}
@@ -81,97 +64,72 @@ public enum ProducerTransferMode
 	ASYNC
 	{
 		@Override
-		public void sendMsg(DefaultMQProducer producer, String topic, String tags, String keys, String msg,
-				String charset, SendCallback callback) throws MqWapperException, MqBussinessException
+		public void sendMsg(DefaultMQProducer producer, EasyMQMessageConfig config)
+				throws MqWapperException, MqBussinessException
+		{
+			if (Objects.isNull(config.getCallback()))
+			{
+				throw new MqBussinessException("ASYNC mode need callback. plz set up EasyMQMessageConfig.callback");
+			}
+			super.sendMsg(producer, config);
+		}
+
+		@Override
+		protected void sendMsg(DefaultMQProducer producer, Message message, EasyMQMessageConfig config)
+				throws MqWapperException, MqBussinessException
 		{
 			try
 			{
-				Message message = new Message(topic, tags, keys, msg.getBytes(charset));
-				producer.send(message, callback);
+				producer.send(message, config.getCallback());
 			}
 			catch (Exception e)
 			{
-				try
-				{
-					Thread.sleep(MQConstant.EXCEPTION_SLEEP_TIME);
-				}
-				catch (InterruptedException e1)
-				{
-					e1.printStackTrace();
-				}
 				throw new MqWapperException(e);
 			}
 		}
 
 		@Override
-		public void sendMsgOrderly(DefaultMQProducer producer, String topic, String tags, String keys, String msg,
-				String orderTag, String charset, SendCallback callback) throws MqBussinessException, MqWapperException
+		protected void sendMsgOrderly(DefaultMQProducer producer, Message message, EasyMQMessageConfig config)
+				throws MqBussinessException, MqWapperException
 		{
 			try
 			{
-				Message message = new Message(topic, tags, keys, msg.getBytes(charset));
-				producer.send(message, new StandardMessageQueueSelector(), orderTag, callback);
+				producer.send(message, new StandardMessageQueueSelector(), config.getOrderTag(), config.getCallback());
 			}
 			catch (Exception e)
 			{
-				try
-				{
-					Thread.sleep(MQConstant.EXCEPTION_SLEEP_TIME);
-				}
-				catch (InterruptedException e1)
-				{
-					e1.printStackTrace();
-				}
 				throw new MqWapperException(e);
 			}
 		}
 	},
-	ONEWAY
 
+	ONEWAY
 	{
 
 		@Override
-		public void sendMsg(DefaultMQProducer producer, String topic, String tags, String keys, String msg,
-				String charset, SendCallback callback) throws MqWapperException, MqBussinessException
+		protected void sendMsg(DefaultMQProducer producer, Message message, EasyMQMessageConfig config)
+				throws MqWapperException, MqBussinessException
 		{
 			try
 			{
-				Message message = new Message(topic, tags, keys, msg.getBytes(charset));
 				producer.sendOneway(message);
 			}
 			catch (Exception e)
 			{
-				try
-				{
-					Thread.sleep(MQConstant.EXCEPTION_SLEEP_TIME);
-				}
-				catch (InterruptedException e1)
-				{
-					e1.printStackTrace();
-				}
 				throw new MqWapperException(e);
 			}
 		}
 
 		@Override
-		public void sendMsgOrderly(DefaultMQProducer producer, String topic, String tags, String keys, String msg,
-				String orderTag, String charset, SendCallback callback) throws MqBussinessException, MqWapperException
+		protected void sendMsgOrderly(DefaultMQProducer producer, Message message, EasyMQMessageConfig config)
+				throws MqBussinessException, MqWapperException
 		{
 			try
 			{
-				Message message = new Message(topic, tags, keys, msg.getBytes(charset));
-				producer.sendOneway(message, new StandardMessageQueueSelector(), orderTag);
+				producer.sendOneway(message, new StandardMessageQueueSelector(), config.getOrderTag());
 			}
 			catch (Exception e)
 			{
-				try
-				{
-					Thread.sleep(MQConstant.EXCEPTION_SLEEP_TIME);
-				}
-				catch (InterruptedException e1)
-				{
-					e1.printStackTrace();
-				}
 				throw new MqWapperException(e);
 			}
 		}
@@ -181,15 +139,40 @@ public enum ProducerTransferMode
 	{
 	}
 
-	public void sendMsg(DefaultMQProducer producer, String topic, String tags, String keys, String msg, String charset,
-			SendCallback callback) throws MqWapperException, MqBussinessException
+	private static Message genMessage(EasyMQMessageConfig config) throws MqWapperException
 	{
+		try
+		{
+			Message message = new Message(config.getTopic(), config.getTags(), config.getKeys(),
+					config.getMessage().getBytes(config.getCharSet()));
+			return message;
+		}
+		catch (Exception e)
+		{
+			throw new MqWapperException(e);
+		}
 
 	}
 
-	public void sendMsgOrderly(DefaultMQProducer producer, String topic, String tags, String keys, String msg,
-			String orderTag, String charset, SendCallback callback) throws MqBussinessException, MqWapperException
+	public void sendMsg(DefaultMQProducer producer, EasyMQMessageConfig config)
+			throws MqWapperException, MqBussinessException
 	{
-
+		Message message = ProducerTransferMode.genMessage(config);
+		if (!Objects.isNull(message))
+		{
+			if (StringUtils.isEmpty(config.getOrderTag()))
+			{
+				this.sendMsg(producer, message, config);
+				return;
+			}
+			this.sendMsgOrderly(producer, message, config);
+		}
 	}
+
+	protected abstract void sendMsg(DefaultMQProducer producer, Message message, EasyMQMessageConfig config)
+			throws MqBussinessException, MqWapperException;
+
+	protected abstract void sendMsgOrderly(DefaultMQProducer producer, Message message, EasyMQMessageConfig config)
+			throws MqBussinessException, MqWapperException;
+
 }
