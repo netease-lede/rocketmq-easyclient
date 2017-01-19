@@ -11,7 +11,7 @@ import com.netease.lottery.easymq.consumer.handler.annotation.EasyMQConsumerMeta
  * @Desc 
  * @Author ykhu
  */
-@EasyMQConsumerMeta(topic = "topic20161116", group = "group2")
+@EasyMQConsumerMeta(topic = "topic20170119-con", group = "group2")
 public class TestMQHandler2 implements EasyMQRecMsgHandler
 {
 

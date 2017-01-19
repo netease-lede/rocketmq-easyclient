@@ -45,6 +45,10 @@ public class EasyMQMessageConfig
 	 * orderTag 顺序消息需要的参数，该参数相同值下的消息保证有序
 	 */
 	private String orderTag;
+	/**
+	 * delayLevel 延迟发送级别
+	 */
+	private EasyMQMessageDelayLevel delayLevel;
 
 	public EasyMQMessageConfig(String topic, String keys, String message)
 	{
@@ -56,6 +60,7 @@ public class EasyMQMessageConfig
 		this.charSet = RemotingHelper.DEFAULT_CHARSET;
 		this.callback = null;
 		this.orderTag = "";
+		this.delayLevel = null;
 	}
 
 	public ProducerTransferMode getTransferMode()
@@ -133,11 +138,22 @@ public class EasyMQMessageConfig
 		this.orderTag = orderTag;
 	}
 
+	public EasyMQMessageDelayLevel getDelayLevel()
+	{
+		return delayLevel;
+	}
+
+	public void setDelayLevel(EasyMQMessageDelayLevel delayLevel)
+	{
+		this.delayLevel = delayLevel;
+	}
+
 	@Override
 	public String toString()
 	{
 		return "EasyMQMessageConfig [transferMode=" + transferMode + ", topic=" + topic + ", tags=" + tags + ", keys="
 				+ keys + ", message=" + message + ", charSet=" + charSet + ", callback=" + callback + ", orderTag="
-				+ orderTag + "]";
+				+ orderTag + ", delayLevel=" + delayLevel + "]";
 	}
+
 }

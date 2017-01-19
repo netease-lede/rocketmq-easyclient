@@ -145,6 +145,10 @@ public enum ProducerTransferMode
 		{
 			Message message = new Message(config.getTopic(), config.getTags(), config.getKeys(),
 					config.getMessage().getBytes(config.getCharSet()));
+			if (Objects.nonNull(config.getDelayLevel()))
+			{
+				message.setDelayTimeLevel(config.getDelayLevel().getDelayLevel());
+			}
 			return message;
 		}
 		catch (Exception e)

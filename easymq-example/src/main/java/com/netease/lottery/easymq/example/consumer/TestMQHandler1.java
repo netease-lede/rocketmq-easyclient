@@ -1,6 +1,5 @@
 package com.netease.lottery.easymq.example.consumer;
 
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -13,7 +12,7 @@ import com.netease.lottery.easymq.consumer.handler.annotation.EasyMQConsumerMeta
  * @Desc 
  * @Author ykhu
  */
-@EasyMQConsumerMeta(topic = "topic20161119", group = "group1")
+@EasyMQConsumerMeta(topic = "topic20170119", group = "group1", isOrderly = true)
 public class TestMQHandler1 implements EasyMQRecMsgHandler
 {
 	private volatile static AtomicInteger count = new AtomicInteger(0);
@@ -28,11 +27,11 @@ public class TestMQHandler1 implements EasyMQRecMsgHandler
 			System.out.println("group1 PaySuccessMQHandler" + message);
 			System.out.println("group1 key:" + message.getKey());
 			System.out.println("group1 message:" + message.getMessage());
-			if (keyInt % 3 == 0)
-			{
-				System.out.println(new Date());
-				throw new RuntimeException();
-			}
+			//			if (keyInt % 3 == 0)
+			//			{
+			//				System.out.println(new Date());
+			//				throw new RuntimeException();
+			//			}
 		}
 
 	}

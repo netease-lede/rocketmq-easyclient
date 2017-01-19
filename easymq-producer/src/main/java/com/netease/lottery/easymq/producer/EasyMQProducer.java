@@ -174,6 +174,10 @@ public class EasyMQProducer
 	public void sendMsg(EasyMQMessageConfig config) throws MqWapperException, MqBussinessException
 	{
 		checkConfig(config);
+		if (Objects.nonNull(config.getCallback()))
+		{
+			config.setTransferMode(ProducerTransferMode.ASYNC);
+		}
 		ProducerTransferMode transferMode = config.getTransferMode();
 		transferMode.sendMsg(producer, config);
 	}
