@@ -19,6 +19,7 @@ public class ConsumerConfigBean
 	private boolean isBroadcast;
 	private int consumerThreadCountMin;
 	private int consumerThreadCountMax;
+	private int consumeMessageBatchMaxSize;
 
 	public Map<String, List<EasyMQRecMsgHandler>> getTopicHandler()
 	{
@@ -90,12 +91,23 @@ public class ConsumerConfigBean
 		this.consumerThreadCountMax = consumerThreadCountMax;
 	}
 
+	public int getConsumeMessageBatchMaxSize()
+	{
+		return consumeMessageBatchMaxSize;
+	}
+
+	public void setConsumeMessageBatchMaxSize(int consumeMessageBatchMaxSize)
+	{
+		this.consumeMessageBatchMaxSize = consumeMessageBatchMaxSize;
+	}
+
 	@Override
 	public String toString()
 	{
-		return "MQConsumerConfigBean [topicHandler=" + topicHandler + ", groupName=" + groupName + ", group=" + group
+		return "ConsumerConfigBean [topicHandler=" + topicHandler + ", groupName=" + groupName + ", group=" + group
 				+ ", isOrderly=" + isOrderly + ", isBroadcast=" + isBroadcast + ", consumerThreadCountMin="
-				+ consumerThreadCountMin + ", consumerThreadCountMax=" + consumerThreadCountMax + "]";
+				+ consumerThreadCountMin + ", consumerThreadCountMax=" + consumerThreadCountMax
+				+ ", consumeMessageBatchMaxSize=" + consumeMessageBatchMaxSize + "]";
 	}
 
 }

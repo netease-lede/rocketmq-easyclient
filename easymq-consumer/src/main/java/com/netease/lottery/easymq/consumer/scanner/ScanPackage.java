@@ -319,6 +319,7 @@ public class ScanPackage
 		boolean broadcast = meta.isBroadcast();
 		int consumerThreadCountMin = meta.consumerThreadCountMin();
 		int consumerThreadCountMax = meta.consumerThreadCountMax();
+		int consumeMessageBatchMaxSize = meta.consumeMessageBatchMaxSize();
 		String groupName = genGroupName(group, orderly, broadcast);
 		if (consumerConfigs.containsKey(groupName))
 		{
@@ -350,6 +351,10 @@ public class ScanPackage
 			{
 				configBean.setConsumerThreadCountMax(consumerThreadCountMin);
 			}
+			if (consumeMessageBatchMaxSize > configBean.getConsumeMessageBatchMaxSize())
+			{
+				configBean.setConsumeMessageBatchMaxSize(consumeMessageBatchMaxSize);
+			}
 		}
 		else
 		{
@@ -358,6 +363,7 @@ public class ScanPackage
 			configBean.setGroupName(groupName);
 			configBean.setConsumerThreadCountMin(consumerThreadCountMin);
 			configBean.setConsumerThreadCountMax(consumerThreadCountMax);
+			configBean.setConsumeMessageBatchMaxSize(consumeMessageBatchMaxSize);
 			configBean.setGroup(group);
 			configBean.setOrderly(orderly);
 			configBean.setBroadcast(broadcast);

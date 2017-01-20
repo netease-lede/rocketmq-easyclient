@@ -18,11 +18,19 @@ public class TestMQHandler2 implements EasyMQRecMsgHandler
 	public void handle(List<MessageBean> msg) throws Exception
 	{
 
-		for (MessageBean message : msg)
+		try
 		{
-			System.out.println("group2 PaySuccessMQHandler" + message);
-			System.out.println("group2 key:" + message.getKey());
-			System.out.println("group2 message:" + message.getMessage());
+			for (MessageBean message : msg)
+			{
+				System.out.println("group2 PaySuccessMQHandler" + message);
+				System.out.println("group2 key:" + message.getKey());
+				System.out.println("group2 message:" + message.getMessage());
+			}
+		}
+		catch (Exception e)
+		{
+			//自定义操作，记录日志等
+			throw e;
 		}
 
 	}

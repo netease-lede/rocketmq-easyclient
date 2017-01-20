@@ -41,12 +41,12 @@ public enum ConsumerTransferMode
 					boolean ok = StandarddealMessage(topicHandlers, msgs, log);
 					if (ok)
 					{
-						System.out.println("ConsumerTransferMode concurrently success");
+						//System.out.println("ConsumerTransferMode concurrently success");
 						return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
 					}
 					else
 					{
-						System.out.println("ConsumerTransferMode concurrently later");
+						//System.out.println("ConsumerTransferMode concurrently later");
 						return ConsumeConcurrentlyStatus.RECONSUME_LATER;
 					}
 				}
@@ -70,12 +70,12 @@ public enum ConsumerTransferMode
 					boolean ok = StandarddealMessage(topicHandlers, msgs, log);
 					if (ok)
 					{
-						System.out.println("ConsumerTransferMode orderly success");
+						//System.out.println("ConsumerTransferMode orderly success");
 						return ConsumeOrderlyStatus.SUCCESS;
 					}
 					else
 					{
-						System.out.println("ConsumerTransferMode orderly moment");
+						//System.out.println("ConsumerTransferMode orderly moment");
 						return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
 					}
 

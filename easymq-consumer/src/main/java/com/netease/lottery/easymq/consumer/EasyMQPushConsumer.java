@@ -70,6 +70,7 @@ public class EasyMQPushConsumer
 		consumer.setConsumerGroup(consumerConfigBean.getGroupName());
 		consumer.setConsumeThreadMin(consumerConfigBean.getConsumerThreadCountMin());
 		consumer.setConsumeThreadMax(consumerConfigBean.getConsumerThreadCountMax());
+		consumer.setConsumeMessageBatchMaxSize(consumerConfigBean.getConsumeMessageBatchMaxSize());
 		for (String topic : consumerConfigBean.getTopicHandler().keySet())
 		{
 			consumer.subscribe(topic, MQConstant.TOPIC_DEFAULT_TAG);

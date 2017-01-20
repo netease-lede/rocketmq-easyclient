@@ -30,6 +30,7 @@ public class EasyMQConsumerManager
 	{
 		try
 		{
+			LOG.info("easyMQ consumer initing.");
 			Properties props = getConfigProp();
 			String packages = props.getProperty(MQConstant.CONFIG_CONSUMER_SCANPACKAGE,
 					MQConstant.CONFIG_CONSUMER_SCANPACKAGE_DEFAULT);
@@ -43,6 +44,7 @@ public class EasyMQConsumerManager
 				consumerGroup.setConsumerConfigBean(consumerConfigBean);
 				consumerGroup.initConsumerGroup();
 			}
+			LOG.info("easyMQ consumer init ok.");
 		}
 		catch (Exception e)
 		{
