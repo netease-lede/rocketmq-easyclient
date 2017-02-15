@@ -1,18 +1,14 @@
 package com.netease.lottery.easymq.producer;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.util.StringUtils;
 
 import com.netease.lottery.easymq.common.constant.MQConstant;
 import com.netease.lottery.easymq.common.exception.MqConsumerConfigException;
-import com.netease.lottery.easymq.common.exception.MqProducerConfigException;
 
 /**
  * 
@@ -58,35 +54,39 @@ public class EasyMQProducerFactory
 	{
 		//从配置文件读取
 		Properties props = new Properties();
-		String root = EasyMQProducerFactory.class.getClassLoader().getResource(MQConstant.CONFIG_DIR).getPath();
-		root = MQConstant.IS_WINDOWS ? root.substring(1) : root;
-		if (StringUtils.isEmpty(root))
+		//		String root = EasyMQProducerFactory.class.getClassLoader().getResource(MQConstant.CONFIG_DIR).getPath();
+		//		root = MQConstant.IS_WINDOWS ? root.substring(1) : root;
+		//		if (StringUtils.isEmpty(root))
+		//		{
+		//			String warn = "easymq wrong. producer config dir not exist. config dir should be src/main/resources/"
+		//					+ MQConstant.CONFIG_DIR;
+		//			LOG.fatal(warn);
+		//			throw new MqProducerConfigException(warn);
+		//		}
+		//		Path configPath = Paths.get(root, MQConstant.CONFIG_DIR_PRODUCERS, MQConstant.DEFAULT_PRODUCER_FILENAME);
+		//		LOG.info("easymq running. find producer properties in " + configPath);
+		//		if (Files.exists(configPath) && Files.isRegularFile(configPath))
+		//		{
+		//		}
+		//		else
+		//		{
+		//			String warn = "easymq wrong. producer config not exist. plz check. configPath should be :" + configPath;
+		//			LOG.fatal(warn);
+		//			throw new MqConsumerConfigException(warn);
+		//		}
+		String filePath = MQConstant.CONFIG_DIR + "/" + MQConstant.CONFIG_DIR_PRODUCERS + "/"
+				+ MQConstant.DEFAULT_PRODUCER_FILENAME;
+		try
 		{
-			String warn = "easymq wrong. producer config dir not exist. config dir should be src/main/resources/"
-					+ MQConstant.CONFIG_DIR;
-			LOG.fatal(warn);
-			throw new MqProducerConfigException(warn);
+			InputStream in = EasyMQProducerFactory.class.getClassLoader().getResourceAsStream(filePath);
+			props.load(in);
+			//			props.load(Files.newInputStream(configPath));
 		}
-		Path configPath = Paths.get(root, MQConstant.CONFIG_DIR_PRODUCERS, MQConstant.DEFAULT_PRODUCER_FILENAME);
-		LOG.info("easymq running. find producer properties in " + configPath);
-		if (Files.exists(configPath) && Files.isRegularFile(configPath))
+		catch (IOException e)
 		{
-			try
-			{
-				props.load(Files.newInputStream(configPath));
-			}
-			catch (IOException e)
-			{
-				String warn = "easymq wrong. producer read config io error. configPath:" + configPath;
-				LOG.fatal(warn, e);
-				throw new MqConsumerConfigException(warn, e);
-			}
-		}
-		else
-		{
-			String warn = "easymq wrong. producer config not exist. plz check. configPath should be :" + configPath;
-			LOG.fatal(warn);
-			throw new MqConsumerConfigException(warn);
+			String warn = "easymq wrong. producer read config io error. configPath:" + filePath;
+			LOG.fatal(warn, e);
+			throw new MqConsumerConfigException(warn, e);
 		}
 		return props;
 	}
