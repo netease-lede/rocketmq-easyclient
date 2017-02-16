@@ -28,7 +28,7 @@ public class MQConstant
 
 	//配置文件变量
 	public static final String CONFIG_CONSUMER_SCANPACKAGE = "easymq.consumer.scanpackage";
-	public static final String CONFIG_CONSUMER_SCANPACKAGE_DEFAULT = "com.netease";
+	public static final String CONFIG_CONSUMER_SCANPACKAGE_DEFAULT = "com.lede";
 	public static final String CONFIG_CONSUMER_NAMESERVER = "easymq.consumer.nameserver";
 	public static final String CONFIG_CONSUMER_INSTANCENAME = "easymq.consumer.instancename";
 	public static final String CONFIG_CONSUMER_TIMEOUT = "easymq.consumer.consumertimeoutminutes";

@@ -28,7 +28,7 @@ public class TestProducer
 		{
 			System.out.println("begin");
 			System.out.println(begin);
-			//sendAsync();
+			sendAsync();
 			//			producer.sendMsg("topic20170118", "id1", "onlyyou");
 			//sendAsyncUseConfig();
 			sendMessageOrderly();
@@ -47,6 +47,7 @@ public class TestProducer
 		}
 
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			@Override
 			public void run()
 			{
 				producer.shutdown();
