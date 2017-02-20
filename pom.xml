@@ -7,10 +7,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<modules>
-		<module>easymq-producer</module>
-		<module>easymq-common</module>
-		<module>easymq-consumer</module>
-    	<module>easymq-example</module>
+		<module>easyclient-producer</module>
+		<module>easyclient-common</module>
+		<module>easyclient-consumer</module>
+    	<module>easyclient-example</module>
   </modules>
 	<properties>
 		<spring.version>4.2.0.RELEASE</spring.version>
@@ -18,25 +18,25 @@
 		<commons-logging.version>1.2</commons-logging.version>
 		<commons-collections.version>3.2</commons-collections.version>
 		<guava.version>19.0-rc1</guava.version>
-		<easymq.version>0.0.1-SNAPSHOT</easymq.version>
+		<easyclient.version>0.0.1-SNAPSHOT</easyclient.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>com.lede.tech</groupId>
-				<artifactId>easymq-common</artifactId>
-				<version>${easymq.version}</version>
+				<artifactId>easyclient-common</artifactId>
+				<version>${easyclient.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.lede.tech</groupId>
-				<artifactId>easymq-producer</artifactId>
-				<version>${easymq.version}</version>
+				<artifactId>easyclient-producer</artifactId>
+				<version>${easyclient.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.lede.tech</groupId>
-				<artifactId>easymq-consumer</artifactId>
-				<version>${easymq.version}</version>
+				<artifactId>easyclient-consumer</artifactId>
+				<version>${easyclient.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.rocketmq</groupId>
