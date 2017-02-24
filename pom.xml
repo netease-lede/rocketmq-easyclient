@@ -24,17 +24,17 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.lede.tech</groupId>
+				<groupId>com.lede.tech.rocketmq</groupId>
 				<artifactId>easyclient-common</artifactId>
 				<version>${easyclient.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.lede.tech</groupId>
+				<groupId>com.lede.tech.rocketmq</groupId>
 				<artifactId>easyclient-producer</artifactId>
 				<version>${easyclient.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.lede.tech</groupId>
+				<groupId>com.lede.tech.rocketmq</groupId>
 				<artifactId>easyclient-consumer</artifactId>
 				<version>${easyclient.version}</version>
 			</dependency>
