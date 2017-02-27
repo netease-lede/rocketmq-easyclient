@@ -32,11 +32,11 @@ public class EasyMQConsumerManager
 			Properties props = getConfigProp();
 			String packages = props.getProperty(MQConstant.CONFIG_CONSUMER_SCANPACKAGE,
 					MQConstant.CONFIG_CONSUMER_SCANPACKAGE_DEFAULT);
-			while (!SpringContextHolder.isSpringContextLoaded())
-			{
-				LOG.info("SpringContext has not been Loaded, sleep 10s");
-				Thread.sleep(10000);
-			}
+			//			while (!SpringContextHolder.isSpringContextLoaded())
+			//			{
+			//				LOG.info("SpringContext has not been Loaded, sleep 10s");
+			//				Thread.sleep(10000);
+			//			}
 			List<ConsumerConfigBean> genConsumerConfigList = ScanPackage.genConsumerConfigList(packages);
 
 			for (ConsumerConfigBean consumerConfigBean : genConsumerConfigList)

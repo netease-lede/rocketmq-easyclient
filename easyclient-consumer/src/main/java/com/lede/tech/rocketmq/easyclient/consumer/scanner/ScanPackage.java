@@ -321,6 +321,7 @@ public class ScanPackage
 		if (serviceAnnotation != null)
 		{
 			handler = SpringContextHolder.getBean(className);
+			LOG.info("get bean from SpringContextHolder success for className:" + className);
 		}
 		else
 		{
