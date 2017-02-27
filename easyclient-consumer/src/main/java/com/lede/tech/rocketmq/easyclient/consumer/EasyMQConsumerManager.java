@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import com.lede.tech.rocketmq.easyclient.common.constant.MQConstant;
 import com.lede.tech.rocketmq.easyclient.common.exception.MqConsumerConfigException;
 import com.lede.tech.rocketmq.easyclient.consumer.bean.ConsumerConfigBean;
+import com.lede.tech.rocketmq.easyclient.consumer.holder.SpringContextHolder;
 import com.lede.tech.rocketmq.easyclient.consumer.scanner.ScanPackage;
 
 /**
@@ -31,6 +32,11 @@ public class EasyMQConsumerManager
 			Properties props = getConfigProp();
 			String packages = props.getProperty(MQConstant.CONFIG_CONSUMER_SCANPACKAGE,
 					MQConstant.CONFIG_CONSUMER_SCANPACKAGE_DEFAULT);
+			while (!SpringContextHolder.isSpringContextLoaded())
+			{
+				LOG.info("SpringContext has not been Loaded, sleep 10s");
+				Thread.sleep(10000);
+			}
 			List<ConsumerConfigBean> genConsumerConfigList = ScanPackage.genConsumerConfigList(packages);
 
 			for (ConsumerConfigBean consumerConfigBean : genConsumerConfigList)
@@ -68,8 +74,7 @@ public class EasyMQConsumerManager
 				+ MQConstant.DEFAULT_CONSUMER_FILENAME;
 		try
 		{
-			InputStream in = EasyMQConsumerManager.class.getClassLoader()
-					.getResourceAsStream(filePath);
+			InputStream in = EasyMQConsumerManager.class.getClassLoader().getResourceAsStream(filePath);
 			//			in = Files.newInputStream(configPath);
 			/*if (in == null)
 			{
