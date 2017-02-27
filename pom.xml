@@ -4,7 +4,7 @@
 	<groupId>com.lede.tech.rocketmq</groupId>
 	<artifactId>rocketmq-easyclient</artifactId>
 	<packaging>pom</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 
 	<modules>
 		<module>easyclient-producer</module>
