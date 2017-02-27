@@ -21,7 +21,7 @@ public class MQConstant
 	public static final int EXCEPTION_SLEEP_TIME = 1000;
 	//topic默认的tag
 	public static final String TOPIC_DEFAULT_TAG = "default";
-	public static final String CONSUMER_INTERFACE_CLASSNAME = "com.lede.tech.easymq.consumer.handler.EasyMQRecMsgHandler";
+	public static final String CONSUMER_INTERFACE_CLASSNAME = "com.lede.tech.rocketmq.easyclient.consumer.handler.EasyMQRecMsgHandler";
 	public static final String CONSUMER_GROUPNAME_SEP = "_";
 	public static final String CONSUMER_ORDERLY_TRUE = "orderly";
 	public static final String CONSUMER_BROADCAST_TRUE = "broadcast";
