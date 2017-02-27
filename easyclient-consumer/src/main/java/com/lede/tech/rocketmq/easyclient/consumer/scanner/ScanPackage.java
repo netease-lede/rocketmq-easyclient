@@ -289,7 +289,7 @@ public class ScanPackage
 					LOG.fatal("easymq wrong. class:" + callbackName + " annotation analysis wrong.");
 					continue;
 				}
-				EasyMQRecMsgHandler handler = getEasyMQRecMsgHandler(cc, cc.getSimpleName());
+				EasyMQRecMsgHandler handler = getEasyMQRecMsgHandler(cc);
 				if (handler == null)
 				{
 					LOG.fatal("easymq wrong. class:" + callbackName + " annotation analysis wrong.");
@@ -313,19 +313,18 @@ public class ScanPackage
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
-	private static EasyMQRecMsgHandler getEasyMQRecMsgHandler(Class<?> beanClass, String className)
-			throws InstantiationException, IllegalAccessException
+	private static EasyMQRecMsgHandler getEasyMQRecMsgHandler(Class<?> beanClass) throws InstantiationException,
+			IllegalAccessException
 	{
 		String beanName = null;
 		Component componntAnnotation = (Component) beanClass.getAnnotation(Component.class);
 		if (componntAnnotation != null)
 		{
 			beanName = componntAnnotation.value();
-			LOG.info("get componntAnnotation success beanName:" + beanName);
 		}
 		if (StringUtils.isEmpty(beanName))
 		{
-			beanName = StringUtils.uncapitalize(className);
+			beanName = StringUtils.uncapitalize(beanClass.getSimpleName());
 		}
 		EasyMQRecMsgHandler handler = SpringContextHolder.getBean(beanName);
 		LOG.info("get spring bean success beanName:" + beanName);
@@ -334,9 +333,7 @@ public class ScanPackage
 			LOG.info("get spring bean success");
 			return handler;
 		}
-		
-		handler = (EasyMQRecMsgHandler) beanClass.newInstance();
-		return handler;
+		return (EasyMQRecMsgHandler) beanClass.newInstance();
 	}
 
 	/**
