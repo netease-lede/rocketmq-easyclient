@@ -6,7 +6,7 @@ import com.lede.tech.rocketmq.easyclient.consumer.bean.MessageBean;
 
 /**
  * 
- * @Desc 
+ * @Desc 消费者实现接口
  * @Author bjguosong
  */
 public interface EasyMQRecMsgHandler

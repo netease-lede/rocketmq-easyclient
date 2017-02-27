@@ -5,13 +5,15 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Component;
 
 import com.lede.tech.rocketmq.easyclient.common.constant.MQConstant;
 import com.lede.tech.rocketmq.easyclient.common.exception.MqConsumerConfigException;
 import com.lede.tech.rocketmq.easyclient.consumer.bean.ConsumerConfigBean;
-import com.lede.tech.rocketmq.easyclient.consumer.holder.SpringContextHolder;
 import com.lede.tech.rocketmq.easyclient.consumer.scanner.ScanPackage;
 
 /**
@@ -20,10 +22,12 @@ import com.lede.tech.rocketmq.easyclient.consumer.scanner.ScanPackage;
  * @Author bjguosong
  * @Author ykhu
  */
+@Component
 public class EasyMQConsumerManager
 {
 	private static final Log LOG = LogFactory.getLog(EasyMQConsumerManager.class);
 
+	@PostConstruct
 	public static void init()
 	{
 		try
@@ -32,11 +36,6 @@ public class EasyMQConsumerManager
 			Properties props = getConfigProp();
 			String packages = props.getProperty(MQConstant.CONFIG_CONSUMER_SCANPACKAGE,
 					MQConstant.CONFIG_CONSUMER_SCANPACKAGE_DEFAULT);
-			//			while (!SpringContextHolder.isSpringContextLoaded())
-			//			{
-			//				LOG.info("SpringContext has not been Loaded, sleep 10s");
-			//				Thread.sleep(10000);
-			//			}
 			List<ConsumerConfigBean> genConsumerConfigList = ScanPackage.genConsumerConfigList(packages);
 
 			for (ConsumerConfigBean consumerConfigBean : genConsumerConfigList)

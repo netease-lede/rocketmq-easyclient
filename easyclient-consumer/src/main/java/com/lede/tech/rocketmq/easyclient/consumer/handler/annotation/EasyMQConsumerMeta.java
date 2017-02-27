@@ -6,15 +6,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.stereotype.Component;
+
 /**
  * 
- * @Desc 
+ * @Desc 消息内容注解，兼容了Spring@Component注解
  * @Author bjguosong
  * @Author ykhu
  */
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Component
 public @interface EasyMQConsumerMeta
 {
 	//订阅主题
