@@ -1,4 +1,4 @@
-# RocketMQ-EasyClinet
+# RocketMQ-EasyClient
 
 ## 简介
 
