@@ -28,10 +28,13 @@ public class TestProducer
 		{
 			System.out.println("begin");
 			System.out.println(begin);
-			sendAsync();
+			for (int i = 0; i < 100; i++)
+			{
+				sendAsync();
+			}
 			//			producer.sendMsg("topic20170118", "id1", "onlyyou");
 			//sendAsyncUseConfig();
-			sendMessageOrderly();
+			//sendMessageOrderly();
 		}
 		catch (MqWapperException e)
 		{
@@ -58,7 +61,7 @@ public class TestProducer
 
 	private static void sendAsync() throws MqWapperException, MqBussinessException
 	{
-		producer.sendMsg("topic20170118", "id3", "UU", new SendCallback() {
+		producer.sendMsg("topic20170119", "new444", "XX4", new SendCallback() {
 			@Override
 			public void onSuccess(SendResult sendResult)
 			{
