@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.lede.tech.rocketmq</groupId>
 		<artifactId>rocketmq-easyclient</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>easyclient-common</artifactId>
 	<packaging>jar</packaging>

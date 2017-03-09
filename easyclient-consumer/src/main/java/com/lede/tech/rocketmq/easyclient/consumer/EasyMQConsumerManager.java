@@ -5,8 +5,11 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Component;
 
 import com.lede.tech.rocketmq.easyclient.common.constant.MQConstant;
 import com.lede.tech.rocketmq.easyclient.common.exception.MqConsumerConfigException;
@@ -19,10 +22,12 @@ import com.lede.tech.rocketmq.easyclient.consumer.scanner.ScanPackage;
  * @Author bjguosong
  * @Author ykhu
  */
+@Component
 public class EasyMQConsumerManager
 {
 	private static final Log LOG = LogFactory.getLog(EasyMQConsumerManager.class);
 
+	@PostConstruct
 	public static void init()
 	{
 		try
@@ -68,8 +73,7 @@ public class EasyMQConsumerManager
 				+ MQConstant.DEFAULT_CONSUMER_FILENAME;
 		try
 		{
-			InputStream in = EasyMQConsumerManager.class.getClassLoader()
-					.getResourceAsStream(filePath);
+			InputStream in = EasyMQConsumerManager.class.getClassLoader().getResourceAsStream(filePath);
 			//			in = Files.newInputStream(configPath);
 			/*if (in == null)
 			{

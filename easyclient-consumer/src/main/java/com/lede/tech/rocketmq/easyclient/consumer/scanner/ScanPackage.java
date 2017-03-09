@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.lede.tech.rocketmq.easyclient.consumer.handler.EasyMQRecMsgHandler;
-import com.lede.tech.rocketmq.easyclient.consumer.handler.annotation.EasyMQConsumerMeta;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
@@ -23,7 +22,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
-import org.springframework.util.StringUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.util.SystemPropertyUtils;
 
 import com.google.common.collect.Lists;
@@ -32,10 +31,13 @@ import com.google.common.collect.Sets;
 import com.lede.tech.rocketmq.easyclient.common.constant.MQConstant;
 import com.lede.tech.rocketmq.easyclient.common.exception.MqConsumerConfigException;
 import com.lede.tech.rocketmq.easyclient.consumer.bean.ConsumerConfigBean;
+import com.lede.tech.rocketmq.easyclient.consumer.context.SpringContextHolder;
+import com.lede.tech.rocketmq.easyclient.consumer.handler.EasyMQRecMsgHandler;
+import com.lede.tech.rocketmq.easyclient.consumer.handler.annotation.EasyMQConsumerMeta;
 
 /**
  * 
- * @Desc 
+ * @Desc 扫描特定的包路径，获取带有特定注解的类
  * @Author bjguosong
  */
 public class ScanPackage
@@ -123,9 +125,8 @@ public class ScanPackage
 				continue;
 			}
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX
-					+ org.springframework.util.ClassUtils.convertClassNameToResourcePath(
-							SystemPropertyUtils.resolvePlaceholders(basePackage))
-					+ "/" + DEFAULT_RESOURCE_PATTERN;
+					+ org.springframework.util.ClassUtils.convertClassNameToResourcePath(SystemPropertyUtils
+							.resolvePlaceholders(basePackage)) + "/" + DEFAULT_RESOURCE_PATTERN;
 			try
 			{
 				Resource[] resources = resourcePatternResolver.getResources(packageSearchPath);
@@ -288,7 +289,12 @@ public class ScanPackage
 					LOG.fatal("easymq wrong. class:" + callbackName + " annotation analysis wrong.");
 					continue;
 				}
-				EasyMQRecMsgHandler handler = (EasyMQRecMsgHandler) cc.newInstance();
+				EasyMQRecMsgHandler handler = getEasyMQRecMsgHandler(cc);
+				if (handler == null)
+				{
+					LOG.fatal("easymq wrong. class:" + callbackName + " annotation analysis wrong.");
+					continue;
+				}
 				consumerConfigs = genConsumerConfigList(consumerConfigs, meta, handler);
 			}
 			catch (Exception e)
@@ -297,6 +303,37 @@ public class ScanPackage
 			}
 		}
 		return new ArrayList<>(consumerConfigs.values());
+	}
+
+	/**
+	 * 根据消费者是否存在Spring Service注解来判断是新建消费者实现类还是从Spring容器获取实现类
+	 * @param beanClass
+	 * @param className
+	 * @return
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	private static EasyMQRecMsgHandler getEasyMQRecMsgHandler(Class<?> beanClass) throws InstantiationException,
+			IllegalAccessException
+	{
+		String beanName = null;
+		Component componntAnnotation = (Component) beanClass.getAnnotation(Component.class);
+		if (componntAnnotation != null)
+		{
+			beanName = componntAnnotation.value();
+		}
+		if (StringUtils.isEmpty(beanName))
+		{
+			beanName = StringUtils.uncapitalize(beanClass.getSimpleName());
+		}
+		EasyMQRecMsgHandler handler = SpringContextHolder.getBean(beanName);
+		LOG.info("get spring bean success beanName:" + beanName);
+		if (handler != null)
+		{
+			LOG.info("get spring bean success");
+			return handler;
+		}
+		return (EasyMQRecMsgHandler) beanClass.newInstance();
 	}
 
 	/**
