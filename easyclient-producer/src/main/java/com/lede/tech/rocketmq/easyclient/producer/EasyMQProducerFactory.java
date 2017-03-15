@@ -44,9 +44,41 @@ public class EasyMQProducerFactory
 		return producer;
 	}
 
+	/**
+	 * 使用客户端自己的Properties配置创建EasyMQProducer
+	 * @param prop
+	 * @return EasyMQProducer
+	 */
+	public static EasyMQProducer getProducer(Properties prop)
+	{
+		try
+		{
+			if (producer == null)
+			{
+				synchronized (EasyMQProducerFactory.class)
+				{
+					if (producer == null)
+					{
+						init(prop);
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			LOG.fatal("easymq wrong. producer init error.", e);
+		}
+		return producer;
+	}
+
 	private static void init()
 	{
 		Properties prop = getConfigProp();
+		buildProducer(prop);
+	}
+
+	private static void init(Properties prop)
+	{
 		buildProducer(prop);
 	}
 
