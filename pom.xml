@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.lede.tech.rocketmq</groupId>
 	<artifactId>rocketmq-easyclient</artifactId>
 	<packaging>pom</packaging>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 
 	<modules>
 		<module>easyclient-producer</module>
 		<module>easyclient-common</module>
 		<module>easyclient-consumer</module>
-    	<module>easyclient-example</module>
-  </modules>
+		<module>easyclient-example</module>
+	</modules>
 	<properties>
 		<spring.version>4.2.0.RELEASE</spring.version>
 		<rocketmq-client.version>4.0.0-SNAPSHOT</rocketmq-client.version>
 		<commons-logging.version>1.2</commons-logging.version>
 		<commons-collections.version>3.2</commons-collections.version>
 		<guava.version>19.0-rc1</guava.version>
-		<easyclient.version>0.0.2-SNAPSHOT</easyclient.version>
+		<easyclient.version>0.0.4-SNAPSHOT</easyclient.version>
+		<fastjson.version>1.2.28</fastjson.version>
 	</properties>
 
 	<dependencyManagement>
@@ -42,6 +44,12 @@
 				<groupId>org.apache.rocketmq</groupId>
 				<artifactId>rocketmq-client</artifactId>
 				<version>${rocketmq-client.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.alibaba</groupId>
+						<artifactId>fastjson</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<!-- 日志相关 -->
 			<dependency>
@@ -94,6 +102,11 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
 				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>${fastjson.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

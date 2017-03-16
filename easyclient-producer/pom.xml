@@ -6,10 +6,10 @@
 	<parent>
 		<groupId>com.lede.tech.rocketmq</groupId>
 		<artifactId>rocketmq-easyclient</artifactId>
-		<version>0.0.3-SNAPSHOT</version>
+		<version>0.0.4-SNAPSHOT</version>
 	</parent>
 	<artifactId>easyclient-producer</artifactId>
-    <packaging>jar</packaging>
+	<packaging>jar</packaging>
 	<name>easyclient-producer</name>
 	<url>http://maven.apache.org</url>
 	<properties>
@@ -27,6 +27,10 @@
 		<dependency>
 			<groupId>org.apache.rocketmq</groupId>
 			<artifactId>rocketmq-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
 		</dependency>
 	</dependencies>
 </project>
