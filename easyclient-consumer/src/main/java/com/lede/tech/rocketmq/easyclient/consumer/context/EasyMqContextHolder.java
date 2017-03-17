@@ -2,10 +2,10 @@ package com.lede.tech.rocketmq.easyclient.consumer.context;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
-@Repository
-public class SpringContextHolder implements ApplicationContextAware
+@Component
+public class EasyMqContextHolder implements ApplicationContextAware
 {
 	private static ApplicationContext applicationContext;
 
@@ -15,7 +15,7 @@ public class SpringContextHolder implements ApplicationContextAware
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
 	{
-		SpringContextHolder.applicationContext = applicationContext;
+		EasyMqContextHolder.applicationContext = applicationContext;
 	}
 
 	/**

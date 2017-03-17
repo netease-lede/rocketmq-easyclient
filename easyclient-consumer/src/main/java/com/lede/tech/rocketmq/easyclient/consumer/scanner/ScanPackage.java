@@ -31,7 +31,7 @@ import com.google.common.collect.Sets;
 import com.lede.tech.rocketmq.easyclient.common.constant.MQConstant;
 import com.lede.tech.rocketmq.easyclient.common.exception.MqConsumerConfigException;
 import com.lede.tech.rocketmq.easyclient.consumer.bean.ConsumerConfigBean;
-import com.lede.tech.rocketmq.easyclient.consumer.context.SpringContextHolder;
+import com.lede.tech.rocketmq.easyclient.consumer.context.EasyMqContextHolder;
 import com.lede.tech.rocketmq.easyclient.consumer.handler.EasyMQRecMsgHandler;
 import com.lede.tech.rocketmq.easyclient.consumer.handler.annotation.EasyMQConsumerMeta;
 
@@ -326,7 +326,7 @@ public class ScanPackage
 		{
 			beanName = StringUtils.uncapitalize(beanClass.getSimpleName());
 		}
-		EasyMQRecMsgHandler handler = SpringContextHolder.getBean(beanName);
+		EasyMQRecMsgHandler handler = EasyMqContextHolder.getBean(beanName);
 		LOG.info("get spring bean success beanName:" + beanName);
 		if (handler != null)
 		{
