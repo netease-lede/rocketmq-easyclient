@@ -8,23 +8,23 @@
 
 &emsp;&emsp;rocketmq服务器端功能强大，具体可参考链接：https://github.com/apache/incubator-rocketmq 。在客户端功能方面，我们的改进主要在易用性和与应用的整合上，目前封装的消息队列客户端基本上在rocketmq的基础上进行了以下扩展方便使用：
 
--  配置封装 : 使用proerties配置文件即可完成producer或者consumer的设置，并且固定了配置文件路径，使得配置项不会随意散落在项目的各个配置文件中，查找确认方便。
--  producer封装 : 使用producer工厂可获得producer实例，提供了三种producer发送方式，同步、异步和不确认发送；分别又支持无序和有序消息，有序消息中的队列分配算法进行了封装，用户不用自己实现。默认为同步无序，api提供config类支持其他发送方式，该config类为后续消息重发功能基础。
--  consumer封装 : 消费者进行了抽象，将需要的各种类型consumer的实例化在封装中完成，用户只需要实现handler接口并添加类注解就可以使用，consumer的实现细节和consumer根据需要的实例化数量和类型等都已封装，用户无需关心，同样的consumer也支持了无序消费和有序消费，用户也无需处理为了接受这两种消息而需要进行特殊设置的细节问题。
-- 概念简化，rocketmq将消息分为两层结构topic和tag，为了便于理解和易于使用，封装了tag层，只暴露topic给用户，让大家使用和其他常见mq概念一致。该调整会再沟通确认后续版本是否放开。
+-  配置封装 : 使用properties配置文件即可完成`producer`或者`consumer`的设置，并且固定了配置文件路径，使得配置项不会随意散落在项目的各个配置文件中，查找确认方便。
+-  `producer`封装 : 使用`producer`工厂可获得`producer`实例，提供了三种`producer`发送方式，同步、异步和不确认发送；分别又支持无序和有序消息，有序消息中的队列分配算法进行了封装，用户不用自己实现。默认为同步无序，api提供`config`类支持其他发送方式，该`config`类为后续消息重发功能基础。
+-  `consumer`封装 : 消费者进行了抽象，将需要的各种类型consumer的实例化在封装中完成，用户只需要实现`handler`接口并添加类注解就可以使用，`consumer`的实现细节和`consumer`根据需要的实例化数量和类型等都已封装，用户无需关心，同样的`consumer`也支持了无序消费和有序消费，用户也无需处理为了接受这两种消息而需要进行特殊设置的细节问题。
+- 概念简化，rocketmq将消息分为两层结构`topic`和`tag`，为了便于理解和易于使用，封装了`tag`层，只暴露`topic`给用户，让大家使用和其他常见mq概念一致。该调整会再沟通确认后续版本是否放开。
 
 ## 后续规划
 
 &emsp;&emsp;目前版本主要封装集中在consumer端，后续计划从以下几个方面完善easyclient功能：
-- producer发送增加消息重放机制，当连不上rocketmq服务器端或者由于其他原因而发送失败时，将消息保存，当连接恢复后重试消息发送。
-- 增加与spring兼容的扫包方式，在EasyMQRecMsgHandler接口实现类中增加spring标签可以生效，即可以和spring注解配合使用，不需要再用ApplicationContext来获取bean了。
+- `producer`发送增加消息重放机制，当连不上rocketmq服务器端或者由于其他原因而发送失败时，将消息保存，当连接恢复后重试消息发送。
+- 增加与spring兼容的扫包方式，在`EasyMQRecMsgHandler`接口实现类中增加spring标签可以生效，即可以和spring注解配合使用，不需要再用ApplicationContext来获取bean了。
 - 功能增强，增加连接多组MQ服务器端配置，增加精确延迟消息以及定时消息等功能。
 
 ## 使用说明
 
 ### producer
 
-#### 如何引入producer
+#### 如何引入`producer`
 
 配置文件增加：
 
@@ -37,7 +37,7 @@ easymq.producer.topicqueuenums=8
 easymq.producer.sendmsgtimeoutmillis=3000
 ```
 
-注：easymq.producer.groupname不能包含.号
+注：`easymq.producer.groupname`不能包含.号
 pom.xml引入：
 
 ```xml
@@ -50,13 +50,14 @@ pom.xml引入：
 工具静态类中可调用：
 
 ```java
-		EasyMQProducer producer = EasyMQProducerFactory.getProducer();
+EasyMQProducer producer = EasyMQProducerFactory.getProducer();
 ```
+
 后续消息发送使用该producer实例即可。
 
 #### 如何使用producer
 
-producer目前暴露了3个api供大家调用
+`producer`目前暴露了3个api供大家调用
 
 ```java
 //方法一：
@@ -69,9 +70,9 @@ public void sendMsg(String topic, String keys, String msg, SendCallback callback
 //方法三：
 public void sendMsg(EasyMQMessageConfig config) throws MqWapperException, MqBussinessException
 ```
-以上方法中的异常MqWapperException为发生内部错误包装的异常，MqBussinessException为服务器端消息状态返回不正确包装的异常。
-方法一为同步调用，参数为topic、keys、msg；topic即为主题，msg为具体发送的消息。keys为该消息对应的键，keys的取值尽量和消息唯一对应（允许不唯一，但不推荐不唯一），根据该key值，可以在后台查询具体消息
-方法二为异步调用，额外参数SendCallback为回调接口：
+以上方法中的异常`MqWapperException`为发生内部错误包装的异常，`MqBussinessException`为服务器端消息状态返回不正确包装的异常。
+方法一为同步调用，参数为`topic`、`keys`、`msg`；`topic`即为主题，`msg`为具体发送的消息。`keys`为该消息对应的键，`keys`的取值尽量和消息唯一对应（允许不唯一，但不推荐不唯一），根据`keys`值，可以在后台查询具体消息
+方法二为异步调用，额外参数`SendCallback`为回调接口：
 
 ```java
 new SendCallback() {
@@ -89,7 +90,7 @@ new SendCallback() {
 };
 ```
 该回调函数处理消息发送成功或者失败后的处理方式。需要注意的一点是，这里指的异步是相对于消息队列服务器端消息处理而言，对于这次调用还是阻塞的。
-方法三为使用EasyMQMessageConfig的定制化发送，当需要发送高级模式消息时，使用该方法，其中EasyMQMessageConfig为：
+方法三为使用`EasyMQMessageConfig`的定制化发送，当需要发送高级模式消息时，使用该方法，其中`EasyMQMessageConfig`为：
 
 ```java
 public class EasyMQMessageConfig
@@ -162,8 +163,8 @@ public class EasyMQMessageConfig
 			producer.sendMsg(config);
 		}
 ```
-增加调用setOrderTag为需要保持顺序的消息设置统一的orderTag则可以保证相同orderTag下的消息有序。
-使用顺序消息需要注意：当一条消息最终消费失败前，相同orderTag的后续消息为了保证消息有序性都都不会被发送到consumer端。
+增加调用`setOrderTag`为需要保持顺序的消息设置统一的`orderTag`则可以保证相同`orderTag`下的消息有序。
+使用顺序消息需要注意：当一条消息最终消费失败前，相同`orderTag`的后续消息为了保证消息有序性都都不会被发送到`consumer`端。
 
 ##### 延迟消息
 
@@ -176,15 +177,15 @@ public class EasyMQMessageConfig
 	config.setDelayLevel(EasyMQMessageDelayLevel.FIVE_MINUTES);
 	producer.sendMsg(config);
 ```
-EasyMQMessageDelayLevel中有所有支持18个级别的枚举
+`EasyMQMessageDelayLevel`中有所有支持18个级别的枚举
 
 ##### 其他设置
 
-EasyMQMessageConfig中同样也可以设置消息编码、调整发送方式等。
+`EasyMQMessageConfig`中同样也可以设置消息编码、调整发送方式等。
 
 ### consumer
 
-#### 如何引入consumer
+#### 如何引入`consumer`
 
 配置文件增加：
 
@@ -195,7 +196,7 @@ easymq.consumer.nameserver=192.168.1.1:9876;192.168.1.2:9876
 easymq.consumer.consumertimeoutminutes=15
 easymq.consumer.scanpackage=com.lede.tech.rocketmq.easyclient.example.consumer
 ```
-其中easymq.consumer.scanpackage为扫包路径，相关consumer接口实现类需要放到该包中
+其中`easymq.consumer.scanpackage`为扫包路径，相关`consumer`接口实现类需要放到该包中
 
 pom.xml引入：
 
@@ -209,13 +210,13 @@ pom.xml引入：
 项目启动需要调用：
 
 ```java
-	EasyMQConsumerManager.init();
+EasyMQConsumerManager.init();
 
 ```
 例如在spring配置文件中中可以这么配置:
 
 ```xml
-	<bean id="easyMQConsumerManager" class="com.lede.tech.rocketmq.easyclient.consumer.EasyMQConsumerManager" init-method="init" />
+<bean id="easyMQConsumerManager" class="com.lede.tech.rocketmq.easyclient.consumer.EasyMQConsumerManager" init-method="init" />
 ```
 
 #### 如何使用consumer
@@ -249,8 +250,8 @@ public class TestMQHandler2 implements EasyMQRecMsgHandler
 }
 ```
 
-MessageBean中包括rocketmq原始消息MessageExt，在需要查看消息高级属性时可从中获取，例如消息产生时间等（比较该字段，可以在客户端实现消息过期）。
-扫包路径中的添加注解EasyMQConsumerMeta并实现了接口EasyMQRecMsgHandler中的类都会被加载。注解中指明接受的topic等信息。
+`MessageBean`中包括rocketmq原始消息`MessageExt`，在需要查看消息高级属性时可从中获取，例如消息产生时间等（比较该字段，可以在客户端实现消息过期）。
+扫包路径中的添加注解`@EasyMQConsumerMeta`并实现了接口`EasyMQRecMsgHandler`中的类都会被加载。注解中指明接受的`topic`等信息。
 注解类：
 
 ```java
