@@ -29,25 +29,27 @@
 配置文件增加：
 
 ```
-一般src/main/resources下增加：
+#一般在src/main/resources下增加：
 easymqconfig/producers/easymq_producer.properties
 easymq.producer.nameserver=192.168.1.1:9876;192.168.1.2:9876
 easymq.producer.groupname=api_producer
 easymq.producer.topicqueuenums=8
 easymq.producer.sendmsgtimeoutmillis=3000
 ```
+
 注：easymq.producer.groupname不能包含.号
 pom.xml引入：
 
-```
+```xml
 <dependency>
 	<groupId>com.lede.tech.rocketmq</groupId>
 	<artifactId>easyclient-producer</artifactId>
-		  <version>0.0.1-SNAPSHOT</version> <!-- 注意版本号请使用最新版 -->
+	<version>0.0.1-SNAPSHOT</version> <!-- 注意版本号请使用最新版 -->
 </dependency>
 ```
 工具静态类中可调用：
-```
+
+```java
 		EasyMQProducer producer = EasyMQProducerFactory.getProducer();
 ```
 后续消息发送使用该producer实例即可。
@@ -56,7 +58,7 @@ pom.xml引入：
 
 producer目前暴露了3个api供大家调用
 
-```
+```java
 //方法一：
 public void sendMsg(String topic, String keys, String msg) throws MqWapperException, MqBussinessException
 
@@ -71,24 +73,25 @@ public void sendMsg(EasyMQMessageConfig config) throws MqWapperException, MqBuss
 方法一为同步调用，参数为topic、keys、msg；topic即为主题，msg为具体发送的消息。keys为该消息对应的键，keys的取值尽量和消息唯一对应（允许不唯一，但不推荐不唯一），根据该key值，可以在后台查询具体消息
 方法二为异步调用，额外参数SendCallback为回调接口：
 
-```
+```java
 new SendCallback() {
-				@Override
-				public void onSuccess(SendResult sendResult)
-				{
-					System.out.println("success");
-				}
+	@Override
+	public void onSuccess(SendResult sendResult)
+	{
+		System.out.println("success");
+	}
 
-				@Override
-				public void onException(Throwable e)
-				{
-					System.out.println("failed");
-				}
+	@Override
+	public void onException(Throwable e)
+	{
+		System.out.println("failed");
+	}
+};
 ```
 该回调函数处理消息发送成功或者失败后的处理方式。需要注意的一点是，这里指的异步是相对于消息队列服务器端消息处理而言，对于这次调用还是阻塞的。
 方法三为使用EasyMQMessageConfig的定制化发送，当需要发送高级模式消息时，使用该方法，其中EasyMQMessageConfig为：
 
-```
+```java
 public class EasyMQMessageConfig
 {
 	/*
@@ -151,7 +154,7 @@ public class EasyMQMessageConfig
 
 以同步发送方法为例：
 
-```
+```java
 		for (int i = 0; i < 5; i++)
 		{
 			EasyMQMessageConfig config = new EasyMQMessageConfig("topic20170118", "id" + i, "onlyU" + i);
@@ -168,10 +171,10 @@ public class EasyMQMessageConfig
 “1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h”
 为了使用方便，这些级别进行了枚举包装：
 
-```
-		EasyMQMessageConfig config = new EasyMQMessageConfig("topic20170119-delay", "id1", "onlyU1");
-		config.setDelayLevel(EasyMQMessageDelayLevel.FIVE_MINUTES);
-		producer.sendMsg(config);
+```java
+	EasyMQMessageConfig config = new EasyMQMessageConfig("topic20170119-delay", "id1", "onlyU1");
+	config.setDelayLevel(EasyMQMessageDelayLevel.FIVE_MINUTES);
+	producer.sendMsg(config);
 ```
 EasyMQMessageDelayLevel中有所有支持18个级别的枚举
 
@@ -186,7 +189,7 @@ EasyMQMessageConfig中同样也可以设置消息编码、调整发送方式等�
 配置文件增加：
 
 ```
-src/main/resources下增加：
+#src/main/resources下增加：
 easymqconfig/consumers/easymq_consumer.properties
 easymq.consumer.nameserver=192.168.1.1:9876;192.168.1.2:9876
 easymq.consumer.consumertimeoutminutes=15
@@ -196,30 +199,29 @@ easymq.consumer.scanpackage=com.lede.tech.rocketmq.easyclient.example.consumer
 
 pom.xml引入：
 
-```
-		<dependency>
-			<groupId>com.lede.tech.rocketmq</groupId>
-			<artifactId>easyclient-consumer</artifactId>
-		        <version>0.0.1-SNAPSHOT</version> <!-- 注意版本号请使用最新版 -->
-		</dependency>
+```xml
+<dependency>
+	<groupId>com.lede.tech.rocketmq</groupId>
+	<artifactId>easyclient-consumer</artifactId>
+	<version>0.0.1-SNAPSHOT</version> <!-- 注意版本号请使用最新版 -->
+</dependency>
 ```
 项目启动需要调用：
 
-```
-		EasyMQConsumerManager.init();
+```java
+	EasyMQConsumerManager.init();
 
 ```
 例如在spring配置文件中中可以这么配置:
 
-```
-	<bean id="easyMQConsumerManager" class="com.lede.tech.rocketmq.easyclient.consumer.EasyMQConsumerManager"
-		init-method="init" />
+```xml
+	<bean id="easyMQConsumerManager" class="com.lede.tech.rocketmq.easyclient.consumer.EasyMQConsumerManager" init-method="init" />
 ```
 
 #### 如何使用consumer
 
 
-```
+```java
 @EasyMQConsumerMeta(topic = "topic20170119-con", group = "group2")
 public class TestMQHandler2 implements EasyMQRecMsgHandler
 {
@@ -246,11 +248,12 @@ public class TestMQHandler2 implements EasyMQRecMsgHandler
 }
 }
 ```
+
 MessageBean中包括rocketmq原始消息MessageExt，在需要查看消息高级属性时可从中获取，例如消息产生时间等（比较该字段，可以在客户端实现消息过期）。
 扫包路径中的添加注解EasyMQConsumerMeta并实现了接口EasyMQRecMsgHandler中的类都会被加载。注解中指明接受的topic等信息。
 注解类：
 
-```
+```java
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
